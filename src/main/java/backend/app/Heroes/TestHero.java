@@ -19,7 +19,11 @@ public class TestHero extends Hero{
     }
     @Override
     public void useSkill(){
-        Statbuff attackbuff = new Statbuff(this,this,this.getName()+" Skill",false,false,false,210,"", Statbuff.Bufftype.ATTACK,50);
-        attackbuff.apply();
+        Statbuff def = new Statbuff(this,this,this.getName()+" Skill",true,false,false,210,"", Statbuff.Bufftype.HP,200);
+        def.apply();
+        Statbuff def1 = new Statbuff(this,this,this.getName()+" Skill",true,false,true,210,"", Statbuff.Bufftype.HP,50);
+        def1.apply();
+        Statbuff def2 = new Statbuff(this,this,this.getName()+" Skill",false,false,false,210,"", Statbuff.Bufftype.HP,50);
+        def2.apply();
     }
 }

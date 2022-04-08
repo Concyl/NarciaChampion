@@ -29,8 +29,7 @@ public abstract class Hero {
     private boolean isFlying;
     @Getter @Setter private String name;
     @Getter @Setter private String fraction;
-    @Getter @Setter
-    private Team team;
+    @Getter @Setter private Team team;
     @Getter @Setter private boolean alive = true;
     private int id;
     private boolean isLegendary;
@@ -50,7 +49,7 @@ public abstract class Hero {
     @Getter @Setter private int critchance;
     @Getter @Setter private int critdamage;
     @Getter @Setter private int critdef;
-    @Getter @Setter private double def=100;
+    @Getter @Setter private double def=1;
     @Getter @Setter private double healing=1;
     @Getter @Setter private int reflecttalent=0;
     @Getter @Setter private int reflectother=0;
@@ -61,18 +60,18 @@ public abstract class Hero {
     private boolean canAutoAttack = true;
     private double autoattackcooldown;
     private boolean isBlind=false;
-    @Getter private final ArrayList<Buff> buffs = new ArrayList<>();
-    @Getter private final ArrayList<Buff> debuffs = new ArrayList<>();
+    @Getter private final ArrayList<Statbuff> buffs = new ArrayList<>();
+    @Getter private final ArrayList<Statbuff> debuffs = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> immunities = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> negativestatus = new ArrayList<>();
 
     // Skill and Energy
-    @Getter @Setter private int energy;
+    @Getter @Setter private int energy=0;
     private int maxEnergy = 100;
     @Getter @Setter private int energyrecoveryrate;
     private boolean canReceiveEnergy= true;
     private boolean isAutoproc;
-    private BasicStats coreStats;
+    @Getter @Setter private BasicStats coreStats;
     
     public Hero(JSONObject heroJSON) {
 
@@ -89,7 +88,6 @@ public abstract class Hero {
         this.critdamage = Math.toIntExact((Long) heroJSON.get("critdamage"));
         this.critdef = Math.toIntExact((Long) heroJSON.get("critdef"));
         this.critdamage = Math.toIntExact((Long) heroJSON.get("critdamage"));
-        this.coreStats = new BasicStats(this.attack,this.maxHp,this.accuracy,this.evasion,this.critchance,this.critdamage,this.critdef,"Core Stats");
 
         this.autoattackrange = Math.toIntExact((Long) heroJSON.get("autoattackrange"));
         this.movementspeed = Math.toIntExact((Long) heroJSON.get("movementspeed"));
@@ -99,6 +97,8 @@ public abstract class Hero {
         this.isAutoproc = (Boolean) heroJSON.get("isAutoproc");
         this.isFlying = (Boolean) heroJSON.get("isFlying");
         this.isLegendary = (Boolean) heroJSON.get("isLegendary");
+
+        this.coreStats = new BasicStats(this.attack,this.maxHp,this.accuracy,this.evasion,this.critchance,this.critdamage,this.critdef,this.energyrecoveryrate,this.movementspeed,this.attackspeed,"Core Stats");
 
         this.calculateRealAttackspeed();
     }

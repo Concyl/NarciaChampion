@@ -1,48 +1,21 @@
 package backend.app;
 
+import lombok.Getter;
+
 public class BasicStats {
-    private int attack;
-    private double hp;
-    private int accuracy;
-    private int evasion;
-    private int crit;
-    private int cridamage;
-    private int critdef;
-    private String origin;
+    @Getter private int attack;
+    @Getter private double hp;
+    @Getter private int accuracy;
+    @Getter private int evasion;
+    @Getter private int crit;
+    @Getter private int cridamage;
+    @Getter private int critdef;
+    @Getter private int energyrecoveryrate;
+    @Getter private int movementspeed;
+    @Getter private double attackspeed;
+    @Getter private String origin;
 
-    public String getOrigin(){
-        return origin;
-    }
-
-    public int getAttack() {
-        return attack;
-    }
-
-    public double getHp() {
-        return hp;
-    }
-
-    public int getAccuracy() {
-        return accuracy;
-    }
-
-    public int getEvasion() {
-        return evasion;
-    }
-
-    public int getCrit() {
-        return crit;
-    }
-
-    public int getCridamage() {
-        return cridamage;
-    }
-
-    public int getCritdef() {
-        return critdef;
-    }
-
-    public BasicStats(int attack, double hp, int accuracy, int evasion, int crit, int cridamage, int critdef, String origin) {
+    public BasicStats(int attack, double hp, int accuracy, int evasion, int crit, int cridamage, int critdef,int energyrecoveryrate,int movementspeed,double attackspeed, String origin) {
         this.attack = attack;
         this.hp = hp;
         this.accuracy = accuracy;
@@ -50,6 +23,9 @@ public class BasicStats {
         this.crit = crit;
         this.cridamage = cridamage;
         this.critdef = critdef;
+        this.energyrecoveryrate = energyrecoveryrate;
+        this.movementspeed = movementspeed;
+        this.attackspeed=attackspeed;
         this.origin = origin;
     }
 }
