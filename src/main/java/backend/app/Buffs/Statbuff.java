@@ -53,7 +53,8 @@ public class Statbuff extends Buff {
             }
         }
         this.target.calculateNegativeEffects();
-        System.out.println(this.target.getName()+" receives "+this.amount+"% "+this.type.toString()+" Immunity from "+this.origin.getName());
+        String s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" Immunity from "+this.origin.getFullname();
+        this.origin.getBattlefield().getCombatText().addCombatText(s);
     }
 
     private void applyImmunityDeBuff(){
@@ -62,19 +63,22 @@ public class Statbuff extends Buff {
         }
         this.target.getNegativestatus().add(this);
         this.target.calculateNegativeEffects();
-        System.out.println(this.target.getName()+" receives "+this.amount+"% "+this.type.toString()+" Negative Status from "+this.origin.getName());
+        String s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" Negative Status from "+this.origin.getFullname();
+        this.origin.getBattlefield().getCombatText().addCombatText(s);
     }
 
     private void buff(){
         if(this.isBuff){
-            System.out.println(this.target.getName()+" receives "+this.amount+"% "+this.type.toString()+" Buff from "+this.origin.getName());
+            String s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" Buff from "+this.origin.getFullname();
+            this.origin.getBattlefield().getCombatText().addCombatText(s);
             this.target.getBuffs().add(this);
         }
         else{
             if(this.target.getImmunities().stream().anyMatch( stat -> stat.type == this.type)){
                 return;
             }
-            System.out.println(this.target.getName()+" receives "+this.amount+"% "+this.type.toString()+" DeBuff from "+this.origin.getName());
+            String s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" DeBuff from "+this.origin.getFullname();
+            this.origin.getBattlefield().getCombatText().addCombatText(s);
             this.target.getDebuffs().add(this);
         }
         applyBuff();
@@ -87,21 +91,25 @@ public class Statbuff extends Buff {
             if(this.isImmunity){
                 if(this.isBuff){
                     this.target.getImmunities().remove(this);
-                    System.out.println(this.target.getName() + " loses " + this.amount + "% " + this.type.toString() + " Immunity from " + this.origin.getName());
+                    String s =this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " Immunity from " + this.origin.getFullname();
+                    this.origin.getBattlefield().getCombatText().addCombatText(s);
                 }
                 else{
                     this.target.getNegativestatus().remove(this);
                     this.target.calculateNegativeEffects();
-                    System.out.println(this.target.getName() + " loses " + this.amount + "% " + this.type.toString() + " Negative Status from " + this.origin.getName());
+                    String s=this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " Negative Status from " + this.origin.getFullname();
+                    this.origin.getBattlefield().getCombatText().addCombatText(s);
                 }
             }
             else {
                 this.target.getBuffs().remove(this);
                 this.applyBuff();
                 if (this.isBuff) {
-                    System.out.println(this.target.getName() + " loses " + this.amount + "% " + this.type.toString() + " Buff from " + this.origin.getName());
+                    String s =this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " Buff from " + this.origin.getFullname();
+                    this.origin.getBattlefield().getCombatText().addCombatText(s);
                 } else {
-                    System.out.println(this.target.getName() + " loses " + this.amount + "% " + this.type.toString() + " DeBuff from " + this.origin.getName());
+                    String s =this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " DeBuff from " + this.origin.getFullname();
+                    this.origin.getBattlefield().getCombatText().addCombatText(s);
                 }
             }
         }

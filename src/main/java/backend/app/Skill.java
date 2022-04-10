@@ -31,7 +31,8 @@ public class Skill {
         }
         if(this.timer == 0 && inrange){
             hero.setEnergy(0);
-            System.out.println(hero.getName()+" uses their skill");
+            String s =hero.getFullname()+" uses their skill";
+            hero.getBattlefield().getCombatText().addCombatText(s);
             if(this.cooldown >0){
                 this.timer = this.cooldown;
             }

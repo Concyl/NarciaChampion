@@ -1,6 +1,7 @@
 package backend.app;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 
 import backend.app.Heroes.Dynamica;
 import backend.app.Heroes.TestHero;
@@ -19,14 +20,16 @@ public class HeroInitController {
 
         ArrayList<Integer> idListRedTeam = new ArrayList<>();
         idListRedTeam.add(0);
+        CombatText combatText = new CombatText();
         ArrayList<Hero> blueHeroes = initHeroFromIds(idListBlueTeam);
         ArrayList<Hero> redHeroes = initHeroFromIds(idListRedTeam);
-        Battlefield battlefield = new Battlefield(blueHeroes, redHeroes);
+        Battlefield battlefield = new Battlefield(blueHeroes, redHeroes,combatText);
         battlefield.init();
         while(battlefield.winner== Battlefield.GameState.UNDECIDED){
             battlefield.update();
         }
-        System.out.println(battlefield.winner.toString());
+        combatText.addCombatText(battlefield.winner.toString());
+        combatText.printCombatText();
     }
 
     private ArrayList<Hero> initHeroFromIds(ArrayList<Integer> heroIds) {

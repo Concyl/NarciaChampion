@@ -3,6 +3,7 @@ package backend.app;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import backend.app.Buffs.SpecialAbility;
 import backend.app.Buffs.Statbuff;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public abstract class Hero {
     private boolean inAttackRange = false;
     private boolean isFlying;
     @Getter @Setter private String name;
+    @Getter @Setter private String fullname;
     @Getter @Setter private String fraction;
     @Getter @Setter private Team team;
     @Getter @Setter private boolean alive = true;
@@ -39,7 +41,7 @@ public abstract class Hero {
     @Getter @Setter private int movementspeed;
     private boolean canMove = true;
     private boolean canActivateSkill = true;
-    private boolean isSilenced = false;
+    @Getter private boolean silenced = false;
     // Stats
     @Getter @Setter private double currentHp;
     @Getter @Setter private double maxHp;
@@ -64,6 +66,7 @@ public abstract class Hero {
     @Getter private final ArrayList<Statbuff> debuffs = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> immunities = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> negativestatus = new ArrayList<>();
+    @Getter private final ArrayList<SpecialAbility> specialAbilities = new ArrayList<>();
 
     // Skill and Energy
     @Getter @Setter private int energy=0;
@@ -99,7 +102,6 @@ public abstract class Hero {
         this.isLegendary = (Boolean) heroJSON.get("isLegendary");
 
         this.coreStats = new BasicStats(this.attack,this.maxHp,this.accuracy,this.evasion,this.critchance,this.critdamage,this.critdef,this.energyrecoveryrate,this.movementspeed,this.attackspeed,"Core Stats");
-
         this.calculateRealAttackspeed();
     }
 
@@ -169,7 +171,8 @@ public abstract class Hero {
                     this.yCoordinate += Math.ceil(distanceHerocanRunInFrame*(1-xpercent));
                 }
             }
-            System.out.println(this.name+" moved from ("+oldX+"|"+oldY+") to ("+this.xCoordinate+"|"+this.yCoordinate+")");
+            String s =(this.fullname+" moved from ("+oldX+"|"+oldY+") to ("+this.xCoordinate+"|"+this.yCoordinate+")");
+            this.getBattlefield().getCombatText().addCombatText(s);
         }
         else{
             this.inAttackRange = true;
@@ -257,7 +260,8 @@ public abstract class Hero {
             if(this.energy>this.maxEnergy){
                 this.energy = this.maxEnergy;
             }
-            System.out.println(this.getName()+" receives "+this.energyrecoveryrate+" energy, previous energy = "+oldenergy+", current Energy = " + this.energy);
+            String s =(this.getFullname()+" receives "+this.energyrecoveryrate+" energy, previous energy = "+oldenergy+", current Energy = " + this.energy);
+            this.getBattlefield().getCombatText().addCombatText(s);
         }
        // this.warden.addEnergy();
     }
@@ -268,8 +272,8 @@ public abstract class Hero {
             this.target = null;
             this.currentHp = 0;
             this.energy = 0;
-            String death = this.getName()+ " dies";
-            System.out.println(death);
+            String death = this.getFullname()+ " dies";
+            this.getBattlefield().getCombatText().addCombatText(death);
         }
     }
 
@@ -341,13 +345,13 @@ public abstract class Hero {
         this.canMove = true;
         this.canAutoAttack = true;
         this.canActivateSkill = true;
-        this.isSilenced = false;
+        this.silenced = false;
         this.canReceiveEnergy = true;
     }
 
     private void applySilence(){
         this.canActivateSkill = false;
-        this.isSilenced = true;
+        this.silenced = true;
     }
 
     private void applyStuns(){

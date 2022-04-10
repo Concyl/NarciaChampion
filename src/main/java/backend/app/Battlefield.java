@@ -1,5 +1,7 @@
 package backend.app;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,6 +23,7 @@ public class Battlefield {
     ArrayList<Hero> activeredHeroes;
     Warden blueWarden;
     Warden redWarden;
+    @Getter CombatText combatText;
     public enum GameState{
         UNDECIDED,BLUEWIN,REDWIN,REDWINTIMEOUT;
 
@@ -40,11 +43,12 @@ public class Battlefield {
         }
     }
 
-    public Battlefield(ArrayList<Hero> blueHeroes, ArrayList<Hero> redHeroes) {
+    public Battlefield(ArrayList<Hero> blueHeroes, ArrayList<Hero> redHeroes,CombatText combatText) {
         this.blueHeroes = blueHeroes;
         this.redHeroes = redHeroes;
         this.activeblueHeroes = blueHeroes;
         this.activeredHeroes = redHeroes;
+        this.combatText = combatText;
     }
 
     public void init() {
@@ -55,16 +59,21 @@ public class Battlefield {
 
     private void setBattlefield(){
         for(int i = 0; i<this.blueHeroes.size();i++){
-            this.blueHeroes.get(i).setBattlefield(this);
-            this.blueHeroes.get(i).setTeam(Hero.Team.BLUE);
+            Hero blue = this.blueHeroes.get(i);
+            blue.setBattlefield(this);
+            blue.setTeam(Hero.Team.BLUE);
+            blue.setFullname(blue.getTeam()+" "+blue.getName());
         }
         for(int i = 0; i<this.redHeroes.size();i++){
-            this.redHeroes.get(i).setBattlefield(this);
-            this.redHeroes.get(i).setTeam(Hero.Team.RED);
+            Hero red = this.redHeroes.get(i);
+            red.setBattlefield(this);
+            red.setTeam(Hero.Team.RED);
+            red.setFullname(red.getTeam()+" "+red.getName());
         }
     }
 
     public void update(){
+        this.combatText.update();
         GameState gamestatus = this.checkGameState();
         if(gamestatus != GameState.UNDECIDED){
             this.winner = gamestatus;

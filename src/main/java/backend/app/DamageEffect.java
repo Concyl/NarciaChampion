@@ -24,7 +24,8 @@ public class DamageEffect {
 
     public void applyDamage() {
         if(!hitCheck()){
-            System.out.println(this.attacker.getName()+" missed "+this.origin+ "against "+receiver.getName());
+            String s =this.attacker.getFullname()+" missed "+this.origin+ "against "+receiver.getFullname();
+            this.attacker.getBattlefield().getCombatText().addCombatText(s);
             return;
         }
         switch (damageType) {
@@ -56,7 +57,8 @@ public class DamageEffect {
         double damageVariance = (Math.random()*(maxRoll-minRoll))+minRoll;
         int damage = (int)Math.floor(this.attacker.getAttack()*damageVariance*narciaAttackmult*this.multiplier);
         damage = critcheck(damage);
-        System.out.println(this.attacker.getName()+" deals "+ damage+ " to "+this.receiver.getName() +" from "+this.origin);
+        String s =(this.attacker.getFullname()+" deals "+ damage+ " to "+this.receiver.getFullname() +" from "+this.origin);
+        this.attacker.getBattlefield().getCombatText().addCombatText(s);
         return damage;
     }
 
@@ -69,8 +71,8 @@ public class DamageEffect {
         receiver.setCurrentHp(oldHp-damage);
         int percentHpBefore = (int)Math.floor((oldHp/receiver.getMaxHp())*100);
         int percentNow = (int)Math.floor((receiver.getCurrentHp()/receiver.getMaxHp())*100);
-        String combattext = receiver.getName() + " receives " + damage +" Normal Damage from "+ this.origin+", HP reduced from "+ oldHp+ " ("+percentHpBefore+"%) to "+(int)receiver.getCurrentHp()+ " ("+percentNow+"%)";
-        System.out.println(combattext);
+        String combattext = receiver.getFullname() + " receives " + damage +" Normal Damage from "+ this.origin+", HP reduced from "+ oldHp+ " ("+percentHpBefore+"%) to "+(int)receiver.getCurrentHp()+ " ("+percentNow+"%)";
+        this.attacker.getBattlefield().getCombatText().addCombatText(combattext);
         this.receiver.postDamage(this.attacker);
     }
 
@@ -85,8 +87,8 @@ public class DamageEffect {
             double critdamage = this.attacker.getCritdamage();
             damage *= 1.5+(critdamage/10000);
             double critpercentage = Math.floor(critical*10000)/100;
-            String combattext = this.attacker.getName()+" crits, with "+ critpercentage+"% critchance";
-            System.out.println(combattext);
+            String combattext = this.attacker.getFullname()+" crits, with "+ critpercentage+"% critchance";
+            this.attacker.getBattlefield().getCombatText().addCombatText(combattext);
         }
         return damage;
     }
