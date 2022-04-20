@@ -1,5 +1,6 @@
 package backend.app.Heroes;
 
+import backend.app.Buffs.SpecificAbilities.TimeBasedPercentSelfHeal;
 import backend.app.Buffs.Statbuff;
 import backend.app.DamageEffect;
 import backend.app.Hero;
@@ -19,11 +20,6 @@ public class TestHero extends Hero{
     }
     @Override
     public void useSkill(){
-        Statbuff def = new Statbuff(this,this,this.getName()+" Skill",true,false,false,210,"", Statbuff.Bufftype.HP,200);
-        def.apply();
-        Statbuff def1 = new Statbuff(this,this,this.getName()+" Skill",true,false,true,210,"", Statbuff.Bufftype.HP,50);
-        def1.apply();
-        Statbuff def2 = new Statbuff(this,this,this.getName()+" Skill",false,false,false,210,"", Statbuff.Bufftype.HP,50);
-        def2.apply();
+        TimeBasedPercentSelfHeal heal = new TimeBasedPercentSelfHeal(30,150,false,"Dyna Self Heal",this,this,"Dyna Self Heal",false,1);
     }
 }

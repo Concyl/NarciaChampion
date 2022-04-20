@@ -6,7 +6,6 @@ public abstract class SpecialAbility {
 
     protected int cooldownTimer = 0;
     protected boolean silencable;
-    protected int stacks;
     protected String name;
     protected Hero origin;
     protected Hero owner;
@@ -15,11 +14,10 @@ public abstract class SpecialAbility {
     protected int timer;
     protected int cooldown;
 
-    public SpecialAbility(int cooldown,int timer, boolean silencable, int stacks, String name, Hero origin,Hero owner, String preciseOrigin, boolean removable) {
+    public SpecialAbility(int cooldown,int timer, boolean silencable, String name, Hero origin,Hero owner, String preciseOrigin, boolean removable) {
         this.cooldown = cooldown;
         this.timer = timer;
         this.silencable = silencable;
-        this.stacks = stacks;
         this.name = name;
         this.origin = origin;
         this.owner = owner;
@@ -45,7 +43,5 @@ public abstract class SpecialAbility {
         }
     }
 
-    public void removeSpecialAbility(){
-        this.origin.getSpecialAbilities().remove(this);
-    }
+    public abstract void removeSpecialAbility();
 }

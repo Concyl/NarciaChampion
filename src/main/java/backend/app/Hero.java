@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import backend.app.Buffs.SpecialAbility;
 import backend.app.Buffs.Statbuff;
+import backend.app.Buffs.TimeBasedSpecialAbility;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;
@@ -67,6 +68,8 @@ public abstract class Hero {
     @Getter private final ArrayList<Statbuff> immunities = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> negativestatus = new ArrayList<>();
     @Getter private final ArrayList<SpecialAbility> specialAbilities = new ArrayList<>();
+    @Getter private final ArrayList<TimeBasedSpecialAbility> timespecialAbilities = new ArrayList<>();
+
 
     // Skill and Energy
     @Getter @Setter private int energy=0;
@@ -228,6 +231,9 @@ public abstract class Hero {
         for(int i = 0; i<this.debuffs.size();i++){
             this.debuffs.get(i).update();
         }
+        for(int i = 0;i<this.getTimespecialAbilities().size();i++){
+            this.getTimespecialAbilities().get(i).update();
+        }
         this.skill.update();
     }
 
@@ -360,12 +366,27 @@ public abstract class Hero {
         this.canActivateSkill = false;
     }
 
+    public void heal(double amount,String text){
+        double oldHp = this.currentHp;
+        double realHeal = amount*this.healing;
+        if(this.currentHp+realHeal>this.maxHp){
+            this.currentHp = this.maxHp;
+        }
+        else {
+            this.currentHp += realHeal;
+        }
+        int oldHppercent = (int) ((oldHp/this.maxHp)*100);
+        int newHppercent = (int) ((this.currentHp/this.maxHp)*100);
+        String combattext = this.fullname+" heals by "+(int)amount+", Hp increased from "+(int)oldHp+" ("+oldHppercent+"%) to "+(int)this.currentHp+" ("+newHppercent+"%) by "+text;
+        this.getBattlefield().getCombatText().addCombatText(combattext);
+    }
+
     private ArrayList<Hero>HeroesinRange(int radius, int xpos, int ypos,ArrayList<Hero> heroes){
         ArrayList<Hero> aliveheroes = filterDeadHeroes(heroes);
         ArrayList<Hero> inRangeHeroes = new ArrayList<>();
         for(int i = 0;i<aliveheroes.size();i++) {
             double xdistance = Math.abs(xpos-aliveheroes.get(i).getXCoordinate());
-            double ydistance = Math.abs(xpos-aliveheroes.get(i).getYCoordinate());
+            double ydistance = Math.abs(ypos-aliveheroes.get(i).getYCoordinate());
             double distance = Math.sqrt((xdistance*xdistance)+(ydistance*ydistance));
             if(distance<= radius){
                 inRangeHeroes.add(aliveheroes.get(i));
