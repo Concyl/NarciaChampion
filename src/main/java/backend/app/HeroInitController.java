@@ -3,6 +3,7 @@ package backend.app;
 import java.util.ArrayList;
 import java.util.EventListener;
 
+import backend.app.Heroes.DummyNoobHeld;
 import backend.app.Heroes.Dynamica;
 import backend.app.Heroes.TestHero;
 import org.json.simple.JSONObject;
@@ -19,7 +20,7 @@ public class HeroInitController {
         idListBlueTeam.add(0);
 
         ArrayList<Integer> idListRedTeam = new ArrayList<>();
-        idListRedTeam.add(0);
+        idListRedTeam.add(1000);
         CombatText combatText = new CombatText();
         ArrayList<Hero> blueHeroes = initHeroFromIds(idListBlueTeam);
         ArrayList<Hero> redHeroes = initHeroFromIds(idListRedTeam);
@@ -58,6 +59,8 @@ public class HeroInitController {
                 return new TestHero(jsonObject);
             case 1:
                 return new Dynamica(jsonObject);
+            case 1000:
+                return new DummyNoobHeld(jsonObject);
             default:
                 return new Dynamica(jsonObject);
         }

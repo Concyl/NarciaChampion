@@ -51,11 +51,12 @@ public class DamageEffect {
         if(!this.attacker.isAlive()){
             return 0;
         }
-        double narciaAttackmult = 0.75;
+        double narciaAttackmult = 1;
         double maxRoll = 1;
-        double minRoll = 0.8;
+        double minRoll = 1;
         double damageVariance = (Math.random()*(maxRoll-minRoll))+minRoll;
         int damage = (int)Math.floor(this.attacker.getAttack()*damageVariance*narciaAttackmult*this.multiplier);
+        damage = this.wardenAdvantage(damage);
         damage = critcheck(damage);
         String s =(this.attacker.getFullname()+" deals "+ damage+ " to "+this.receiver.getFullname() +" from "+this.origin);
         this.attacker.getBattlefield().getCombatText().addCombatText(s);
@@ -67,13 +68,62 @@ public class DamageEffect {
             return;
         }
         int oldHp = (int)receiver.getCurrentHp();
-        //TODO
+        damage = (int) (damage*receiver.getDef());
+        damage = this.wardenDef(damage);
         receiver.setCurrentHp(oldHp-damage);
         int percentHpBefore = (int)Math.floor((oldHp/receiver.getMaxHp())*100);
         int percentNow = (int)Math.floor((receiver.getCurrentHp()/receiver.getMaxHp())*100);
         String combattext = receiver.getFullname() + " receives " + damage +" Normal Damage from "+ this.origin+", HP reduced from "+ oldHp+ " ("+percentHpBefore+"%) to "+(int)receiver.getCurrentHp()+ " ("+percentNow+"%)";
         this.attacker.getBattlefield().getCombatText().addCombatText(combattext);
         this.receiver.postDamage(this.attacker);
+    }
+
+    private int wardenAdvantage(int damage){
+        Hero.Fraction attackfraction = this.attacker.getFraction();
+        Hero.Fraction deffraction = this.receiver.getFraction();
+        if(attackfraction == deffraction){
+            return damage;
+        }
+        else if(attackfraction == Hero.Fraction.ORDERBOUND || attackfraction == Hero.Fraction.VOIDWALKER){
+           return getFractionAttackMult(damage);
+        }
+        else if(attackfraction == Hero.Fraction.SAINT && deffraction == Hero.Fraction.BRAWLER
+                || attackfraction == Hero.Fraction.ORACLE && deffraction == Hero.Fraction.SAINT
+                || attackfraction == Hero.Fraction.BRAWLER && deffraction == Hero.Fraction.ORACLE){
+            return getFractionAttackMult(damage);
+        }
+        return damage;
+    }
+
+    private int wardenDef(int damage){
+        Hero.Fraction attackfraction = this.attacker.getFraction();
+        Hero.Fraction deffraction = this.receiver.getFraction();
+        if(attackfraction == deffraction){
+            return damage;
+        }
+        else if(deffraction == Hero.Fraction.ORDERBOUND || deffraction == Hero.Fraction.VOIDWALKER){
+            return getFractionDefMult(damage);
+        }
+        else if(attackfraction == Hero.Fraction.SAINT && deffraction == Hero.Fraction.ORACLE
+                || attackfraction == Hero.Fraction.ORACLE && deffraction == Hero.Fraction.BRAWLER
+                || attackfraction == Hero.Fraction.BRAWLER && deffraction == Hero.Fraction.SAINT){
+            return getFractionDefMult(damage);
+        }
+        return damage;
+    }
+
+    private int getFractionDefMult(int damage){
+        damage = (int)(damage*0.15);
+        return damage;
+    }
+
+    private int getFractionAttackMult(int damage){
+        damage = (int)(damage*2.96);
+        return damage;
+    }
+
+    private int damageReduction(){
+        return 0 ;
     }
 
     private int critcheck(int damage){

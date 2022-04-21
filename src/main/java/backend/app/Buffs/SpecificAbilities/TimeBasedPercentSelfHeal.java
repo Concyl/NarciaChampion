@@ -14,7 +14,7 @@ public class TimeBasedPercentSelfHeal extends TimeBasedSpecialAbility {
 
     @Override
     public void applySkill() {
-        double percentageamount =this.owner.getMaxHp()*percentage;
+        double percentageamount =this.owner.getMaxHp()*(percentage/100);
         this.owner.heal(percentageamount,this.preciseOrigin);
     }
 }

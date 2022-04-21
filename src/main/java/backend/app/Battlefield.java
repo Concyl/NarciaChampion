@@ -150,26 +150,26 @@ public class Battlefield {
     }
 
     private void initWarden() {
-        String bleu = getWardenBonus(this.blueHeroes);
-        String red = getWardenBonus(this.redHeroes);
+        Hero.Fraction bleu = getWardenBonus(this.blueHeroes);
+        Hero.Fraction red = getWardenBonus(this.redHeroes);
     }
 
-    private String getWardenBonus(ArrayList<Hero> heroes) {
-        ArrayList<String> fractions = new ArrayList<>();
+    private Hero.Fraction getWardenBonus(ArrayList<Hero> heroes) {
+        ArrayList<Hero.Fraction> fractions = new ArrayList<>();
         for (int i = 0; i < heroes.size(); i++) {
             fractions.add(heroes.get(i).getFraction());
         }
         return getHighestOccurences(fractions);
     }
 
-    private String getHighestOccurences(ArrayList<String> list) {
+    private Hero.Fraction getHighestOccurences(ArrayList<Hero.Fraction> list) {
         int max = 0;
         int equalmax = 0;
         int curr = 0;
-        String currKey = null;
-        Set<String> unique = new HashSet<String>(list);
+        Hero.Fraction currKey = null;
+        Set<Hero.Fraction> unique = new HashSet<Hero.Fraction>(list);
 
-        for (String key : unique) {
+        for (Hero.Fraction key : unique) {
             curr = Collections.frequency(list, key);
 
             if (max == curr) {
@@ -181,7 +181,7 @@ public class Battlefield {
             }
         }
         if (equalmax == max) {
-            return "";
+            return Hero.Fraction.NONE;
         } else {
             return currKey;
         }

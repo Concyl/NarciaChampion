@@ -15,7 +15,7 @@
         "attackspeed": 900,
         "energyrecoveryrate": 15,
         "isAutoproc": false,
-        "fraction": "Oracle",
+        "fraction": "Orderbound",
         "isFlying": false,
         "isLegendary": false
     },

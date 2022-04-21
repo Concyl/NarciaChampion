@@ -10,8 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;
 
-import backend.app.Buffs.Buff;
-
 public abstract class Hero {
 
     public enum Team{
@@ -20,6 +18,10 @@ public abstract class Hero {
 
     public enum Immunities{
         ALL,
+    }
+
+    public enum Fraction{
+        ORACLE,SAINT,BRAWLER,ORDERBOUND,VOIDWALKER,NONE
     }
 
     private Warden warden;
@@ -31,7 +33,7 @@ public abstract class Hero {
     private boolean isFlying;
     @Getter @Setter private String name;
     @Getter @Setter private String fullname;
-    @Getter @Setter private String fraction;
+    @Getter @Setter private Fraction fraction;
     @Getter @Setter private Team team;
     @Getter @Setter private boolean alive = true;
     private int id;
@@ -83,7 +85,7 @@ public abstract class Hero {
 
         this.id = Math.toIntExact((Long) heroJSON.get("id"));
         this.name = (String) heroJSON.get("name");
-        this.setFraction((String) heroJSON.get("fraction"));
+        this.parseFraction((String) heroJSON.get("fraction"));
 
         this.attack = Math.toIntExact((Long) heroJSON.get("attack"));
         this.maxHp = Math.toIntExact((Long) heroJSON.get("hp"));
@@ -106,6 +108,29 @@ public abstract class Hero {
 
         this.coreStats = new BasicStats(this.attack,this.maxHp,this.accuracy,this.evasion,this.critchance,this.critdamage,this.critdef,this.energyrecoveryrate,this.movementspeed,this.attackspeed,"Core Stats");
         this.calculateRealAttackspeed();
+    }
+
+    private void parseFraction(String fraction){
+        switch(fraction){
+            case "Saint":
+                this.fraction = Fraction.SAINT;
+                break;
+            case "Oracle":
+                this.fraction = Fraction.ORACLE;
+                break;
+            case "Brawler":
+                this.fraction = Fraction.BRAWLER;
+                break;
+            case "Orderbound":
+                this.fraction = Fraction.ORDERBOUND;
+                break;
+            case "Voidwalker":
+                this.fraction = Fraction.VOIDWALKER;
+                break;
+            default:
+                this.fraction = Fraction.NONE;
+                break;
+        }
     }
 
     private int distanceToTarget(){
