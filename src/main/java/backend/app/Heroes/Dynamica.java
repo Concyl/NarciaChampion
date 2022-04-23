@@ -10,10 +10,9 @@ import java.util.ArrayList;
 public class Dynamica extends Hero {
     public Dynamica(JSONObject heroJSON) {
         super(heroJSON);
-        this.init();
     }
 
-    private void init(){
+    public void init(){
         this.skill = new Skill(210,0,"Dynamica Skill");
     }
     @Override

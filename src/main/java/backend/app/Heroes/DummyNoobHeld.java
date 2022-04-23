@@ -1,22 +1,32 @@
 package backend.app.Heroes;
 
 import backend.app.Buffs.SpecificAbilities.TimeBasedPercentSelfHeal;
+import backend.app.DamageEffect;
 import backend.app.Hero;
 import backend.app.Skill;
 import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
 
 public class DummyNoobHeld extends Hero {
 
     public DummyNoobHeld(JSONObject heroJSON) {
         super(heroJSON);
-        this.init();
     }
 
-    private void init(){
+    public void init(){
         this.skill = new Skill(30,0,"DummyNoobHero Skill");
+        this.getPassiveIgnores().add(DamageEffect.SpecialIgnores.IGNOREREFLECT);
     }
     @Override
     public void useSkill(){
         TimeBasedPercentSelfHeal heal = new TimeBasedPercentSelfHeal(30,150,false,"Dyna Self Heal",this,this,"Dyna Self Heal",false,15);
+        ArrayList<Hero> enemies = getAmountofAliveHeroes(1,this.getEnemyTeam());
+        for(int i = 0; i<enemies.size();i++){
+            if(this.isAlive()) {
+                DamageEffect damage = new DamageEffect(this, enemies.get(i), DamageEffect.DamageType.NORMAL, 1, "Dynamica Skill", DamageEffect.SpecialIgnores.IGNOREREFLECT);
+                damage.applyDamage();
+            }
+        }
     }
 }

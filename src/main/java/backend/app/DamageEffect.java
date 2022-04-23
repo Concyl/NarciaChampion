@@ -1,8 +1,10 @@
 package backend.app;
 
+import java.util.ArrayList;
+
 public class DamageEffect {
     public enum DamageType {
-        NORMAL, TRUEDAMAGE, FLAT, FLATPERCENT
+        NORMAL, TRUEDAMAGE, FLAT
     }
     public enum SpecialIgnores{
         DAMAGECAP, DAMAGETOLP, CANTMISS, DAMAGEREDUCTION, NOREFLECTEDDAMAGE, IGNOREREFLECT
@@ -13,6 +15,7 @@ public class DamageEffect {
     private Hero attacker;
     private Hero receiver;
     private String origin;
+    public final ArrayList<SpecialIgnores> specialIgnores = new ArrayList<>();
 
     public DamageEffect(Hero attacker, Hero receiver, DamageType type, double multiplier, String origin) {
         this.damageType = type;
@@ -20,6 +23,26 @@ public class DamageEffect {
         this.receiver = receiver;
         this.multiplier = multiplier;
         this.origin = origin;
+    }
+
+    public DamageEffect(Hero attacker, Hero receiver, DamageType type, double multiplier, String origin,ArrayList<SpecialIgnores> ignores) {
+        this.damageType = type;
+        this.attacker = attacker;
+        this.receiver = receiver;
+        this.multiplier = multiplier;
+        this.origin = origin;
+        for(int i =0;i<ignores.size();i++){
+            this.specialIgnores.add(ignores.get(i));
+        }
+    }
+
+    public DamageEffect(Hero attacker, Hero receiver, DamageType type, double multiplier, String origin,SpecialIgnores ignores) {
+        this.damageType = type;
+        this.attacker = attacker;
+        this.receiver = receiver;
+        this.multiplier = multiplier;
+        this.origin = origin;
+        this.specialIgnores.add(ignores);
     }
 
     public void applyDamage() {
@@ -36,9 +59,6 @@ public class DamageEffect {
 
                 break;
             case FLAT:
-
-                break;
-            case FLATPERCENT:
 
                 break;
             default:
@@ -68,14 +88,46 @@ public class DamageEffect {
             return;
         }
         int oldHp = (int)receiver.getCurrentHp();
-        damage = (int) (damage*receiver.getDef());
-        damage = this.wardenDef(damage);
+        if( !this.specialIgnores.contains(SpecialIgnores.DAMAGEREDUCTION) && !this.attacker.getPassiveIgnore(SpecialIgnores.DAMAGEREDUCTION)){
+            damage = damageReduction(damage);
+        }
+        if(this.receiver.getDamageCap() > 0){
+            damage = this.damageCap(damage);
+        }
+        damage = this.reflect(damage);
         receiver.setCurrentHp(oldHp-damage);
         int percentHpBefore = (int)Math.floor((oldHp/receiver.getMaxHp())*100);
         int percentNow = (int)Math.floor((receiver.getCurrentHp()/receiver.getMaxHp())*100);
         String combattext = receiver.getFullname() + " receives " + damage +" Normal Damage from "+ this.origin+", HP reduced from "+ oldHp+ " ("+percentHpBefore+"%) to "+(int)receiver.getCurrentHp()+ " ("+percentNow+"%)";
         this.attacker.getBattlefield().getCombatText().addCombatText(combattext);
         this.receiver.postDamage(this.attacker);
+    }
+
+    private void receiveReflectDamage(int damage){
+
+    }
+
+    private int reflect(int damage){
+        int reflectDamage = damage;
+        int reflect = this.receiver.getReflect();
+        if(reflect != 0 && !this.specialIgnores.contains(SpecialIgnores.IGNOREREFLECT) && !this.attacker.getPassiveIgnore(SpecialIgnores.IGNOREREFLECT)) {
+            reflectDamage = damage * (100 - reflect) / 100;
+            if (!this.specialIgnores.contains(SpecialIgnores.NOREFLECTEDDAMAGE)) {
+                int reflectedDamage = damage - reflectDamage;
+                this.receiveReflectDamage(reflectedDamage);
+            }
+        }
+        return reflectDamage;
+    }
+
+    private int damageCap(int damage){
+        if(!this.specialIgnores.contains(SpecialIgnores.DAMAGECAP) && !this.attacker.getPassiveIgnore(SpecialIgnores.DAMAGECAP)){
+            int damagecap = this.receiver.getDamageCap();
+            if(damagecap<damage){
+                damage = damagecap;
+            }
+        }
+        return damage;
     }
 
     private int wardenAdvantage(int damage){
@@ -122,8 +174,10 @@ public class DamageEffect {
         return damage;
     }
 
-    private int damageReduction(){
-        return 0 ;
+    private int damageReduction(int damage){
+        int damageAfterDef = (int) (damage*receiver.getDef());
+        int damageAfterWarden = this.wardenDef(damageAfterDef);
+        return damageAfterWarden ;
     }
 
     private int critcheck(int damage){

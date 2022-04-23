@@ -12,14 +12,16 @@ import java.util.ArrayList;
 public class TestHero extends Hero{
     public TestHero(JSONObject heroJSON) {
         super(heroJSON);
-        this.init();
     }
 
-    private void init(){
+    public void init(){
         this.skill = new Skill(30,0,"TestHero Skill");
+        this.setReflectother(100);
     }
     @Override
     public void useSkill(){
-        TimeBasedPercentSelfHeal heal = new TimeBasedPercentSelfHeal(30,150,false,"Dyna Self Heal",this,this,"Dyna Self Heal",false,1);
+        //Statbuff def = new Statbuff(this,this,"BaseLineAbility",true,false,false,1500,"Def", Statbuff.Bufftype.DEF,2);
+        //def.apply();
+       // TimeBasedPercentSelfHeal heal = new TimeBasedPercentSelfHeal(30,150,false,"Dyna Self Heal",this,this,"Dyna Self Heal",false,1);
     }
 }

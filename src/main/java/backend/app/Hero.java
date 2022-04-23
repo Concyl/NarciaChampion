@@ -56,6 +56,10 @@ public abstract class Hero {
     @Getter @Setter private int critdef;
     @Getter @Setter private double def=1;
     @Getter @Setter private double healing=1;
+
+    @Getter @Setter private int damageCap=-1;
+    @Getter @Setter private int damageReflectCap=-1;
+
     @Getter @Setter private int reflecttalent=0;
     @Getter @Setter private int reflectother=0;
 
@@ -65,6 +69,9 @@ public abstract class Hero {
     private boolean canAutoAttack = true;
     private double autoattackcooldown;
     private boolean isBlind=false;
+
+    @Getter private final ArrayList<DamageEffect.SpecialIgnores> passiveIgnores = new ArrayList<>();
+
     @Getter private final ArrayList<Statbuff> buffs = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> debuffs = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> immunities = new ArrayList<>();
@@ -131,6 +138,10 @@ public abstract class Hero {
                 this.fraction = Fraction.NONE;
                 break;
         }
+    }
+
+    public int getReflect(){
+        return this.reflectother;
     }
 
     private int distanceToTarget(){
@@ -335,6 +346,8 @@ public abstract class Hero {
 
     protected abstract void useSkill();
 
+    protected abstract void init();
+
     public ArrayList<Hero> alliesInRange(int radius, int xpos, int ypos){
         return HeroesinRange(radius,xpos,ypos,this.getAlliesTeam());
     }
@@ -370,6 +383,10 @@ public abstract class Hero {
                    // KEINE HEILUNG
            }
        }
+    }
+
+    public boolean getPassiveIgnore(DamageEffect.SpecialIgnores ignore){
+        return this.getPassiveIgnores().contains(ignore);
     }
 
     private void resetNegativeEffets(){

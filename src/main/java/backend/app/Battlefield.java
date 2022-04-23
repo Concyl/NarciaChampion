@@ -63,12 +63,14 @@ public class Battlefield {
             blue.setBattlefield(this);
             blue.setTeam(Hero.Team.BLUE);
             blue.setFullname(blue.getTeam()+" "+blue.getName());
+            blue.init();
         }
         for(int i = 0; i<this.redHeroes.size();i++){
             Hero red = this.redHeroes.get(i);
             red.setBattlefield(this);
             red.setTeam(Hero.Team.RED);
             red.setFullname(red.getTeam()+" "+red.getName());
+            red.init();
         }
     }
 
