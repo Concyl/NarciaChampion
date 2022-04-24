@@ -16,7 +16,10 @@ public class TestHero extends Hero{
 
     public void init(){
         this.skill = new Skill(30,0,"TestHero Skill");
-        this.setReflectother(100);
+        this.getPassiveIgnores().add(DamageEffect.SpecialIgnores.DAMAGECAP);
+        this.setReflectother(10);
+        Statbuff def = new Statbuff(this,this,"BaseLineAbility",true,false,false,1500,"Def", Statbuff.Bufftype.DEF,95);
+        def.apply();
     }
     @Override
     public void useSkill(){

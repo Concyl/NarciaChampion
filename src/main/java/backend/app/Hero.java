@@ -284,14 +284,14 @@ public abstract class Hero {
             }
             this.setAttackSpeedCd();
             if(!isBlind){
-                DamageEffect damage = new DamageEffect(this,this.target, DamageEffect.DamageType.NORMAL,1, "Auto Attack");
+                DamageEffect damage = new DamageEffect(this,this.target, DamageEffect.DamageType.TRUE,1, "Auto Attack");
                 damage.applyDamage();
             }
         }
     }
 
-    public void postDamage(Hero attacker){
-        this.deathCheck(attacker);
+    public void postDamage(){
+        this.deathCheck();
         this.addAutoEnergy();
     }
 
@@ -307,16 +307,21 @@ public abstract class Hero {
         }
        // this.warden.addEnergy();
     }
-    private void deathCheck(Hero attacker){
+
+    public void deathCheck(){
         if(this.currentHp <= 0){
             this.setAlive(false);
-            attacker.setTarget(null);
             this.target = null;
             this.currentHp = 0;
             this.energy = 0;
             String death = this.getFullname()+ " dies";
             this.getBattlefield().getCombatText().addCombatText(death);
         }
+    }
+
+    // TODO
+    public boolean getSpikeshield(){
+        return false;
     }
 
     private void setAttackSpeedCd(){

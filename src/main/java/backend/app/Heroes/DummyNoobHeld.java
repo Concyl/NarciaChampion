@@ -16,7 +16,8 @@ public class DummyNoobHeld extends Hero {
 
     public void init(){
         this.skill = new Skill(30,0,"DummyNoobHero Skill");
-        this.getPassiveIgnores().add(DamageEffect.SpecialIgnores.IGNOREREFLECT);
+       // this.getPassiveIgnores().add(DamageEffect.SpecialIgnores.IGNOREREFLECT);
+        this.setDamageCap(11);
     }
     @Override
     public void useSkill(){
@@ -24,7 +25,7 @@ public class DummyNoobHeld extends Hero {
         ArrayList<Hero> enemies = getAmountofAliveHeroes(1,this.getEnemyTeam());
         for(int i = 0; i<enemies.size();i++){
             if(this.isAlive()) {
-                DamageEffect damage = new DamageEffect(this, enemies.get(i), DamageEffect.DamageType.NORMAL, 1, "Dynamica Skill", DamageEffect.SpecialIgnores.IGNOREREFLECT);
+                DamageEffect damage = new DamageEffect(this, enemies.get(i), DamageEffect.DamageType.FLATPERCENT, 70, "Dynamica Skill", DamageEffect.SpecialIgnores.IGNOREREFLECT);
                 damage.applyDamage();
             }
         }
