@@ -2,6 +2,7 @@ package backend.app.Buffs.SpecificAbilities;
 
 import backend.app.Buffs.TimeBasedSpecialAbility;
 import backend.app.Hero;
+import org.json.simple.JSONObject;
 
 public class TimeBasedPercentSelfHeal extends TimeBasedSpecialAbility {
 
@@ -10,6 +11,11 @@ public class TimeBasedPercentSelfHeal extends TimeBasedSpecialAbility {
     public TimeBasedPercentSelfHeal(int cooldown, int timer, boolean silencable, String name, Hero origin, Hero owner, String preciseOrigin, boolean removable,double percentage) {
         super(cooldown, timer, silencable, name, origin, owner, preciseOrigin, removable);
         this.percentage = percentage;
+    }
+
+    public TimeBasedPercentSelfHeal(JSONObject specialJSON){
+        super(specialJSON);
+        this.percentage = (int)(long) specialJSON.get("percentage");
     }
 
     @Override

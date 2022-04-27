@@ -284,7 +284,7 @@ public abstract class Hero {
             }
             this.setAttackSpeedCd();
             if(!isBlind){
-                DamageEffect damage = new DamageEffect(this,this.target, DamageEffect.DamageType.TRUE,1, "Auto Attack");
+                DamageEffect damage = new DamageEffect(this,this.target, DamageEffect.DamageType.NORMAL,1, "Auto Attack");
                 damage.applyDamage();
             }
         }
@@ -321,6 +321,11 @@ public abstract class Hero {
 
     // TODO
     public boolean getSpikeshield(){
+        return false;
+    }
+
+    //TODO
+    public boolean getDamageToLP(){
         return false;
     }
 
@@ -390,6 +395,7 @@ public abstract class Hero {
        }
     }
 
+    //TODO
     public boolean getPassiveIgnore(DamageEffect.SpecialIgnores ignore){
         return this.getPassiveIgnores().contains(ignore);
     }

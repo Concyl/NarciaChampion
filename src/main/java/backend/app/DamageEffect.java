@@ -16,7 +16,7 @@ public class DamageEffect {
     private Hero receiver;
     private String origin;
     public final ArrayList<SpecialIgnores> specialIgnores = new ArrayList<>();
-    private double narciaMultiplicator=0.75;
+    private double narciaMultiplicator=1;
 
     public DamageEffect(Hero attacker, Hero receiver, DamageType type, double multiplier, String origin) {
         this.damageType = type;
@@ -81,9 +81,17 @@ public class DamageEffect {
         int damage = (int)Math.floor(this.attacker.getAttack()*damageVariance*narciaAttackmult*this.multiplier);
         damage = this.wardenAdvantage(damage);
         damage = critcheck(damage);
-        String s =(this.attacker.getFullname()+" deals "+ damage+ " Normal Damage to "+this.receiver.getFullname() +" from "+this.origin);
+        String s =(this.attacker.getFullname()+" deals "+ damage+ " "+this.damageType.name()+" Damage to "+this.receiver.getFullname() +" from "+this.origin);
         this.attacker.getBattlefield().getCombatText().addCombatText(s);
         return damage;
+    }
+
+    private boolean damageToLpCheck(){
+        boolean damageToLpactive = this.receiver.getDamageToLP();
+        if(damageToLpactive && !this.specialIgnores.contains(SpecialIgnores.DAMAGETOLP) && !this.attacker.getPassiveIgnore(SpecialIgnores.DAMAGETOLP)){
+            return true;
+        }
+        return false;
     }
 
     private int dealTrueDamage(){
@@ -93,7 +101,7 @@ public class DamageEffect {
         double narciaAttackmult = this.narciaMultiplicator;
         int skilldamage = (int)Math.floor((this.attacker.getCoreStats().getAttack()*this.multiplier*narciaAttackmult));
         int damageAfterCrit = critcheck(skilldamage);
-        String s =(this.attacker.getFullname()+" deals "+ damageAfterCrit+ " True Damage to "+this.receiver.getFullname() +" from "+this.origin);
+        String s =(this.attacker.getFullname()+" deals "+ damageAfterCrit+ " "+this.damageType.name()+" Damage to "+this.receiver.getFullname() +" from "+this.origin);
         this.attacker.getBattlefield().getCombatText().addCombatText(s);
         return damageAfterCrit;
     }
@@ -104,7 +112,7 @@ public class DamageEffect {
         }
         double narciaAttackmult = this.narciaMultiplicator;
         int skilldamage = (int)Math.floor((this.receiver.getMaxHp()*(this.multiplier/100)*narciaAttackmult));
-        String s =(this.attacker.getFullname()+" deals "+ skilldamage+ " Flat Percent Damage to "+this.receiver.getFullname() +" from "+this.origin);
+        String s =(this.attacker.getFullname()+" deals "+ skilldamage+ " "+this.damageType.name()+" Damage to "+this.receiver.getFullname() +" from "+this.origin);
         this.attacker.getBattlefield().getCombatText().addCombatText(s);
         return skilldamage;
     }
@@ -115,13 +123,17 @@ public class DamageEffect {
         }
         double narciaAttackmult = this.narciaMultiplicator;
         int skilldamage = (int)Math.floor(this.multiplier*narciaAttackmult);
-        String s =(this.attacker.getFullname()+" deals "+ skilldamage+ " Flat Damage to "+this.receiver.getFullname() +" from "+this.origin);
+        String s =(this.attacker.getFullname()+" deals "+ skilldamage+ " "+this.damageType.name()+" Damage to "+this.receiver.getFullname() +" from "+this.origin);
         this.attacker.getBattlefield().getCombatText().addCombatText(s);
         return skilldamage;
     }
 
     private void receiveDamage(int damage){
         if(!this.attacker.isAlive() || !this.receiver.isAlive()){
+            return;
+        }
+        if(this.damageToLpCheck()){
+            this.receiver.heal(damage,"Damage To Lp");
             return;
         }
         if(damage == 0){
@@ -139,7 +151,7 @@ public class DamageEffect {
         this.receiver.setCurrentHp(oldHp-damage);
         int percentHpBefore = (int)Math.floor((oldHp/this.receiver.getMaxHp())*100);
         int percentNow = (int)Math.floor((this.receiver.getCurrentHp()/this.receiver.getMaxHp())*100);
-        String combattext = this.receiver.getFullname() + " receives " + damage +" Normal Damage from "+ this.origin+", HP reduced from "+ oldHp+ " ("+percentHpBefore+"%) to "+(int)receiver.getCurrentHp()+ " ("+percentNow+"%)";
+        String combattext = this.receiver.getFullname() + " receives " + damage +" "+this.damageType.name()+" Damage from "+ this.origin+", HP reduced from "+ oldHp+ " ("+percentHpBefore+"%) to "+(int)receiver.getCurrentHp()+ " ("+percentNow+"%)";
         this.attacker.getBattlefield().getCombatText().addCombatText(combattext);
         this.receiver.postDamage();
     }
@@ -153,7 +165,7 @@ public class DamageEffect {
         int damageAfterReflectCap = this.damageReflectCap(damageAfterCaps);
         this.attacker.setCurrentHp(oldHp-damageAfterReflectCap);
         int percentHpBefore = (int)Math.floor((oldHp/this.attacker.getMaxHp())*100);
-        int percentNow = (int)Math.floor((this.receiver.getCurrentHp()/this.attacker.getMaxHp())*100);
+        int percentNow = (int)Math.floor((this.attacker.getCurrentHp()/this.attacker.getMaxHp())*100);
         String combattext = this.attacker.getFullname() + " receives " + damageAfterReflectCap +" Reflected Damage from "+ this.origin+", HP reduced from "+ oldHp+ " ("+percentHpBefore+"%) to "+(int)attacker.getCurrentHp()+ " ("+percentNow+"%)";
         this.attacker.getBattlefield().getCombatText().addCombatText(combattext);
         this.attacker.deathCheck();
@@ -258,6 +270,9 @@ public class DamageEffect {
     }
 
     private boolean hitCheck(){
+        if(this.specialIgnores.contains(SpecialIgnores.CANTMISS) || attacker.getPassiveIgnore(SpecialIgnores.DAMAGECAP)){
+            return true;
+        }
         int hitcap = 10000;
         if(this.receiver.getEvasion()< this.attacker.getAccuracy()){
             return true;

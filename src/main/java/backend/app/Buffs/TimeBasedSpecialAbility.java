@@ -1,6 +1,7 @@
 package backend.app.Buffs;
 
 import backend.app.Hero;
+import org.json.simple.JSONObject;
 
 public abstract class TimeBasedSpecialAbility extends SpecialAbility{
 
@@ -8,6 +9,10 @@ public abstract class TimeBasedSpecialAbility extends SpecialAbility{
                                    String name, Hero origin, Hero owner, String preciseOrigin, boolean removable){
         super(cooldown,timer,silencable,name,origin,owner,preciseOrigin,removable);
         this.owner.getTimespecialAbilities().add(this);
+    }
+
+    public TimeBasedSpecialAbility(JSONObject specialJSON){
+        super(specialJSON);
     }
 
     @Override
