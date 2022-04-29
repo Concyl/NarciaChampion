@@ -1,6 +1,7 @@
 [
   {
     "typename": "backend.app.Buffs.OnHitSpecialAbilites",
+    "id": 0,
     "cooldownTimer": 0,
     "silencable": false,
     "name": "Dyna Heal",
@@ -8,10 +9,16 @@
     "removable": false,
     "timer": 1500,
     "cooldown": 30,
-    "chanceToAcitvate": 50
+    "chanceToAcitvate": 50,
+    "stacks": -1,
+    "ability": {
+      "typename": "backend.app.Buffs.SpecificAbilities.PercentHeal",
+      "percentage": 9
+    }
   },
   {
     "typename": "backend.app.Buffs.OnHitSpecialAbilites",
+    "id": 1,
     "cooldownTimer": 0,
     "silencable": false,
     "name": "Weak Heal",
@@ -19,10 +26,16 @@
     "removable": false,
     "timer": 1500,
     "cooldown": 30,
-    "chanceToAcitvate": 9
+    "chanceToAcitvate": 9,
+    "stacks": 3,
+    "ability": {
+      "typename": "backend.app.Buffs.SpecificAbilities.PercentHeal",
+      "percentage": 9
+    }
   },
   {
-    "typename": "backend.app.Buffs.SpecificAbilities.TimeBasedPercentSelfHeal",
+    "typename": "backend.app.Buffs.TimeBasedSpecialAbility",
+    "id": 2,
     "cooldownTimer": 0,
     "silencable": false,
     "name": "Time Heal",
@@ -30,6 +43,9 @@
     "removable": false,
     "timer": 1500,
     "cooldown": 30,
-    "percentage": 9
+    "ability": {
+      "typename": "backend.app.Buffs.SpecificAbilities.PercentHeal",
+      "percentage": 9
+    }
   }
 ]

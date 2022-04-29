@@ -28,4 +28,15 @@ public class BasicStats {
         this.attackspeed=attackspeed;
         this.origin = origin;
     }
+    public BasicStats(int attack, double hp, int accuracy, int evasion, int crit, int cridamage, int critdef, String origin) {
+        this.attack = attack;
+        this.hp = hp;
+        this.accuracy = accuracy;
+        this.evasion = evasion;
+        this.crit = crit;
+        this.cridamage = cridamage;
+        this.critdef = critdef;
+        this.origin = origin;
+    }
+
 }

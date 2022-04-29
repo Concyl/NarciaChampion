@@ -26,6 +26,4 @@ public class Buff {
             this.timer--;
         }
     }
-
-
 }

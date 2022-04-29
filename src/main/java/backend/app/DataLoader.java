@@ -1,11 +1,5 @@
 package backend.app;
 
-import backend.app.Buffs.OnHitSpecialAbilites;
-import backend.app.Buffs.SpecialAbility;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -33,11 +27,11 @@ public class DataLoader {
         return null;
     }
 
-    public static ArrayList<JSONObject> loadSpecialAbilites(){
+    public static ArrayList<JSONObject> loadSpecialAbilites(String path){
         JSONParser parser = new JSONParser();
         try {
             String filePath = new File("").getAbsolutePath();
-            JSONArray obj = (JSONArray) parser.parse(new FileReader(filePath + "/src/main/resources/specialAbilities.json"));
+            JSONArray obj = (JSONArray) parser.parse(new FileReader(filePath + path));
             ArrayList<JSONObject> result = new ArrayList<>();
             for (int i = 0; i < obj.size(); i++) {
                 JSONObject hero = (JSONObject) obj.get(i);
@@ -48,5 +42,35 @@ public class DataLoader {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static JSONObject getIDObjectfromJSON(int id, ArrayList<JSONObject> list,String search) {
+        for (int i = 0; i < list.size(); i++) {
+            long curid = (long) (list.get(i).get(search));
+            if (id == Math.toIntExact(curid)) {
+                return list.get(i);
+            }
+        }
+        return null;
+    }
+
+    public static ArrayList<Integer> getJSONListfromJSON(JSONObject json,String search) {
+        JSONArray jsonObject = (JSONArray) json.get(search);
+        ArrayList<Integer> ids = new ArrayList<>();
+        for(int i = 0;i<jsonObject.size();i++){
+            Long obj = (Long) jsonObject.get(i);
+            ids.add((int) obj.doubleValue());
+        }
+        return ids;
+    }
+
+    public static ArrayList<String> getJSONListfromJSONString(JSONObject json,String search) {
+        JSONArray jsonObject = (JSONArray) json.get(search);
+        ArrayList<String> ids = new ArrayList<>();
+        for(int i = 0;i<jsonObject.size();i++){
+            String obj = (String) jsonObject.get(i);
+            ids.add(obj);
+        }
+        return ids;
     }
 }

@@ -6,21 +6,19 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;
 
-import java.lang.reflect.InvocationTargetException;
-
 public abstract class SpecialAbility {
 
     @Getter @Setter protected int cooldownTimer = 0;
     @Getter @Setter protected boolean silencable;
     @Getter @Setter protected String name;
-    @JsonIgnore
     @Getter @Setter protected Hero origin;
-    @JsonIgnore
     @Getter @Setter protected Hero owner;
     @Getter @Setter protected String preciseOrigin;
     @Getter @Setter protected boolean removable;
     @Getter @Setter protected int timer;
     @Getter @Setter protected int cooldown;
+    @Getter @Setter protected Ability ability;
+    @Getter @Setter protected int id;
 
     public SpecialAbility(int cooldown,int timer, boolean silencable, String name, Hero origin,Hero owner, String preciseOrigin, boolean removable) {
         this.cooldown = cooldown;
@@ -33,13 +31,14 @@ public abstract class SpecialAbility {
         this.removable = removable;
     }
 
-    public SpecialAbility(int cooldown,int timer, boolean silencable, String name, String preciseOrigin, boolean removable) {
+    public SpecialAbility(int cooldown,int timer, boolean silencable, String name, String preciseOrigin, boolean removable, int id) {
         this.cooldown = cooldown;
         this.timer = timer;
         this.silencable = silencable;
         this.name = name;
         this.preciseOrigin = preciseOrigin;
         this.removable = removable;
+        this.id = id;
     }
     public SpecialAbility(){
 
@@ -51,7 +50,9 @@ public abstract class SpecialAbility {
                 (boolean) specialJSON.get("silencable"),
                 (String)specialJSON.get("name"),
                 (String)specialJSON.get("preciseOrigin"),
-                (boolean) specialJSON.get("removable"));
+                (boolean) specialJSON.get("removable"),
+                (int)(long) specialJSON.get("id"));
+       this.ability = Ability.fromJSON((JSONObject) specialJSON.get("ability"));
     }
 
     public static SpecialAbility fromJSON(JSONObject data) {
@@ -65,7 +66,9 @@ public abstract class SpecialAbility {
         }
     }
 
-    public abstract void applySkill();
+    public void applySkill(){
+        this.ability.applySkill(this);
+    }
 
     public void update() {
         this.progressTimer();

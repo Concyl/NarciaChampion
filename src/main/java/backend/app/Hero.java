@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import backend.app.Buffs.SpecialAbility;
 import backend.app.Buffs.Statbuff;
+import backend.app.Buffs.Talent;
 import backend.app.Buffs.TimeBasedSpecialAbility;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,6 +73,7 @@ public abstract class Hero {
 
     @Getter private final ArrayList<DamageEffect.SpecialIgnores> passiveIgnores = new ArrayList<>();
 
+    @Getter private final ArrayList<Talent> talents = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> buffs = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> debuffs = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> immunities = new ArrayList<>();
@@ -92,7 +94,7 @@ public abstract class Hero {
 
         this.id = Math.toIntExact((Long) heroJSON.get("id"));
         this.name = (String) heroJSON.get("name");
-        this.parseFraction((String) heroJSON.get("fraction"));
+        this.fraction = (Fraction.valueOf( (String) heroJSON.get("fraction")));
 
         this.attack = Math.toIntExact((Long) heroJSON.get("attack"));
         this.maxHp = Math.toIntExact((Long) heroJSON.get("hp"));
@@ -115,29 +117,6 @@ public abstract class Hero {
 
         this.coreStats = new BasicStats(this.attack,this.maxHp,this.accuracy,this.evasion,this.critchance,this.critdamage,this.critdef,this.energyrecoveryrate,this.movementspeed,this.attackspeed,"Core Stats");
         this.calculateRealAttackspeed();
-    }
-
-    private void parseFraction(String fraction){
-        switch(fraction){
-            case "Saint":
-                this.fraction = Fraction.SAINT;
-                break;
-            case "Oracle":
-                this.fraction = Fraction.ORACLE;
-                break;
-            case "Brawler":
-                this.fraction = Fraction.BRAWLER;
-                break;
-            case "Orderbound":
-                this.fraction = Fraction.ORDERBOUND;
-                break;
-            case "Voidwalker":
-                this.fraction = Fraction.VOIDWALKER;
-                break;
-            default:
-                this.fraction = Fraction.NONE;
-                break;
-        }
     }
 
     public int getReflect(){

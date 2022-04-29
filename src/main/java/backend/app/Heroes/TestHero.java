@@ -1,13 +1,10 @@
 package backend.app.Heroes;
 
-import backend.app.Buffs.SpecificAbilities.TimeBasedPercentSelfHeal;
 import backend.app.Buffs.Statbuff;
 import backend.app.DamageEffect;
 import backend.app.Hero;
 import backend.app.Skill;
 import org.json.simple.JSONObject;
-
-import java.util.ArrayList;
 
 public class TestHero extends Hero{
     public TestHero(JSONObject heroJSON) {

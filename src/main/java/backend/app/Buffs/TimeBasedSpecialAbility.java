@@ -3,7 +3,7 @@ package backend.app.Buffs;
 import backend.app.Hero;
 import org.json.simple.JSONObject;
 
-public abstract class TimeBasedSpecialAbility extends SpecialAbility{
+public class TimeBasedSpecialAbility extends SpecialAbility{
 
     public TimeBasedSpecialAbility(int cooldown, int timer,boolean silencable,
                                    String name, Hero origin, Hero owner, String preciseOrigin, boolean removable){
@@ -13,6 +13,10 @@ public abstract class TimeBasedSpecialAbility extends SpecialAbility{
 
     public TimeBasedSpecialAbility(JSONObject specialJSON){
         super(specialJSON);
+    }
+
+    public TimeBasedSpecialAbility(){
+
     }
 
     @Override

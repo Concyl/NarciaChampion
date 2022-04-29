@@ -1,0 +1,26 @@
+[
+  {
+    "id": 0,
+    "name": "Sacred Light",
+    "attack": 1500,
+    "hp": 10000,
+    "type": ["NORMAL","INSIGNIA"],
+    "specialAbilities": [1,2]
+  },
+  {
+    "id": 1,
+    "name": "Specters Instinct",
+    "attack": 0,
+    "hp": 0,
+    "type": ["ENCHANTMENT"],
+    "specialAbilities": [3]
+  },
+  {
+    "id": 2,
+    "name": " Orderbound Shield",
+    "attack": 6500,
+    "hp": 1000,
+    "type": ["LUXURYINSIGNIA"],
+    "specialAbilities": [4,5]
+  }
+]

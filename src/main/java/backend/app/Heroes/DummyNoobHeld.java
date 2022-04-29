@@ -1,6 +1,5 @@
 package backend.app.Heroes;
 
-import backend.app.Buffs.SpecificAbilities.TimeBasedPercentSelfHeal;
 import backend.app.DamageEffect;
 import backend.app.Hero;
 import backend.app.Skill;
@@ -21,7 +20,6 @@ public class DummyNoobHeld extends Hero {
     }
     @Override
     public void useSkill(){
-        TimeBasedPercentSelfHeal heal = new TimeBasedPercentSelfHeal(30,150,false,"Dyna Self Heal",this,this,"Dyna Self Heal",false,15);
         ArrayList<Hero> enemies = getAmountofAliveHeroes(1,this.getEnemyTeam());
         for(int i = 0; i<enemies.size();i++){
             if(this.isAlive()) {
