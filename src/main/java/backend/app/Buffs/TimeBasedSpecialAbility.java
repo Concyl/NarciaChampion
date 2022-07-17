@@ -22,18 +22,17 @@ public class TimeBasedSpecialAbility extends SpecialAbility{
     @Override
     public void update() {
         super.update();
-        if (this.cooldownTimer == 0 && (!this.owner.isSilenced() || !this.silencable)) {
+        if (this.cooldownTimer == 0 && (!this.owner.isSilenced() || !this.silencable) && this.ability.canActivate(this)) {
             this.setCooldown();
             this.applySkill();
         }
     }
 
-    public void setCooldown(){
-        this.cooldownTimer = this.cooldown;
-    }
-
     @Override
     public void removeSpecialAbility(){
+        String s =(this.owner.getFullname()+" loses "+this.name + " TimeBasedSpecialAbility");
+        this.owner.getBattlefield().getCombatText().addCombatText(s);
+        this.owner.getSpecialAbilities().remove(this);
         this.owner.getTimespecialAbilities().remove(this);
     }
 }

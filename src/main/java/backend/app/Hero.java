@@ -3,10 +3,7 @@ package backend.app;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import backend.app.Buffs.SpecialAbility;
-import backend.app.Buffs.Statbuff;
-import backend.app.Buffs.Talent;
-import backend.app.Buffs.TimeBasedSpecialAbility;
+import backend.app.Buffs.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;
@@ -121,6 +118,16 @@ public abstract class Hero {
 
     public int getReflect(){
         return this.reflectother;
+    }
+
+    public void addSpecialAbility(SpecialAbility specialAbility){
+        this.getSpecialAbilities().add(specialAbility);
+        if(specialAbility.getOwner() == null){
+            specialAbility.setOwner(this);
+        }
+        if(specialAbility instanceof TimeBasedSpecialAbility){
+            this.getTimespecialAbilities().add((TimeBasedSpecialAbility) specialAbility);
+        }
     }
 
     private int distanceToTarget(){
@@ -246,8 +253,8 @@ public abstract class Hero {
         for(int i = 0; i<this.debuffs.size();i++){
             this.debuffs.get(i).update();
         }
-        for(int i = 0;i<this.getTimespecialAbilities().size();i++){
-            this.getTimespecialAbilities().get(i).update();
+        for(int i = 0;i<this.getSpecialAbilities().size();i++){
+            this.getSpecialAbilities().get(i).update();
         }
         this.skill.update();
     }
@@ -271,6 +278,11 @@ public abstract class Hero {
 
     public void postDamage(){
         this.deathCheck();
+        for(int i = 0 ; i<this.getSpecialAbilities().size();i++){
+            if(this.getSpecialAbilities().get(i) instanceof OnHitSpecialAbilites){
+                ((OnHitSpecialAbilites) this.getSpecialAbilities().get(i)).trigger();
+            }
+        }
         this.addAutoEnergy();
     }
 
@@ -336,6 +348,17 @@ public abstract class Hero {
     protected abstract void useSkill();
 
     protected abstract void init();
+
+    public void initTalents(){
+        for(int i = 0; i<this.getTalents().size();i++){
+            Talent talent = this.getTalents().get(i);
+            for(int j=0;j<talent.getSpecialAbilities().size();j++){
+                SpecialAbility specialAbility = talent.getSpecialAbilities().get(j);
+                specialAbility.init(this,this);
+                this.specialAbilities.add(specialAbility);
+            }
+        }
+    }
 
     public ArrayList<Hero> alliesInRange(int radius, int xpos, int ypos){
         return HeroesinRange(radius,xpos,ypos,this.getAlliesTeam());

@@ -14,4 +14,12 @@ public class PercentHeal extends Ability {
         double percentageamount =specialAbility.getOwner().getMaxHp()*(percentage/100);
         specialAbility.getOwner().heal(percentageamount,specialAbility.getPreciseOrigin());
     }
+
+    @Override
+    public boolean canActivate(SpecialAbility specialAbility){
+        if(specialAbility.getOwner().isAlive()){
+            return true;
+        }
+        return false;
+    }
 }

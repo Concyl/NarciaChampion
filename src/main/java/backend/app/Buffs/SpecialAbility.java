@@ -70,6 +70,10 @@ public abstract class SpecialAbility {
         this.ability.applySkill(this);
     }
 
+    public void setCooldown(){
+        this.cooldownTimer = this.cooldown;
+    }
+
     public void update() {
         this.progressTimer();
         if(this.timer == 0){
@@ -84,6 +88,11 @@ public abstract class SpecialAbility {
         if(this.cooldownTimer > 0){
             this.cooldownTimer--;
         }
+    }
+
+    public void init(Hero origin,Hero owner){
+        this.origin = origin;
+        this.owner = owner;
     }
 
     public abstract void removeSpecialAbility();

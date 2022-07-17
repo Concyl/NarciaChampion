@@ -23,8 +23,8 @@ public class DummyNoobHeld extends Hero {
         ArrayList<Hero> enemies = getAmountofAliveHeroes(1,this.getEnemyTeam());
         for(int i = 0; i<enemies.size();i++){
             if(this.isAlive()) {
-                DamageEffect damage = new DamageEffect(this, enemies.get(i), DamageEffect.DamageType.FLATPERCENT, 70, "Dynamica Skill", DamageEffect.SpecialIgnores.IGNOREREFLECT);
-                damage.applyDamage();
+                //DamageEffect damage = new DamageEffect(this, enemies.get(i), DamageEffect.DamageType.FLATPERCENT, 70, "Dynamica Skill", DamageEffect.SpecialIgnores.IGNOREREFLECT);
+               // damage.applyDamage();
             }
         }
     }

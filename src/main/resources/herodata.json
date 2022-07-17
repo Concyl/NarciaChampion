@@ -38,7 +38,7 @@
         "fraction": "SAINT",
         "isFlying": false,
         "isLegendary": false,
-        "specialAbilities":[0,2]
+        "specialAbilities":[0]
     },
     {
         "id": 1,

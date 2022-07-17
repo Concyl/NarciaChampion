@@ -16,7 +16,7 @@ public class Mainclass {
         hero.createHeroObjectswithIds();
         SpecialAbility specialAbility = hero.getSpecialAbilityfromId(1);
         Talent talent = hero.getTalentFromId(0);
-       // List<JSONObject> specialAbilites = DataLoader.loadSpecialAbilites();
+      //  List<JSONObject> specialAbilites = DataLoader.loadSpecialAbilites("/src/main/resources/specialAbilities.json");
        // List<SpecialAbility> list = specialAbilites.stream().map(data -> SpecialAbility.fromJSON(data)).collect(Collectors.toList());
 
     }

@@ -51,6 +51,9 @@ public class HeroInitController {
             ArrayList<Integer> specialIDJson = DataLoader.getJSONListfromJSON(heroJSON,"specialAbilities");
             ArrayList<SpecialAbility> abilities = initSpecialAbilitiesFromIds(specialIDJson);
             Hero initHero = mapIdstoHeroes(heroIds.get(i),heroJSON);
+            for(int j = 0; j<abilities.size();j++){
+                initHero.addSpecialAbility(abilities.get(j));
+            }
             initalizedHeroes.add(initHero);
         }
         return initalizedHeroes;
