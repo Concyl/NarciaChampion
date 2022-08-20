@@ -75,7 +75,6 @@ public class Battlefield {
     }
 
     public void update(){
-        this.combatText.update();
         GameState gamestatus = this.checkGameState();
         if(gamestatus != GameState.UNDECIDED){
             this.winner = gamestatus;
@@ -84,6 +83,7 @@ public class Battlefield {
             this.heroActionLoop();
         }
         this.timer++;
+        this.combatText.update();
     }
 
     private void heroActionLoop(){

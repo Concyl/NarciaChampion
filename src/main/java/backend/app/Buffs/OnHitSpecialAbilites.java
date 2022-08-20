@@ -5,12 +5,14 @@ import lombok.Setter;
 import org.json.simple.JSONObject;
 
 public class OnHitSpecialAbilites extends SpecialAbility{
-    @Getter @Setter private int chanceToAcitvate;
+    @Getter @Setter private int chanceToActivate;
     @Getter @Setter private int stacks;
+    @Getter @Setter private int hpThreshold;
 
     public OnHitSpecialAbilites(JSONObject specialJSON){
         super(specialJSON);
-        this.chanceToAcitvate = (int)(long) specialJSON.get("chanceToAcitvate");
+        this.chanceToActivate = (int)(long) specialJSON.get("chanceToActivate");
+        this.hpThreshold = (int)(long) specialJSON.get("hpThreshold");
         this.stacks = (int)(long) specialJSON.get("stacks");
     }
 
@@ -19,7 +21,7 @@ public class OnHitSpecialAbilites extends SpecialAbility{
     }
 
     public void trigger(){
-        if(this.rollChanceToActivate() && this.ability.canActivate(this) && this.cooldownTimer == 0 && (!this.owner.isSilenced() || !this.silencable) && this.stacks != 0){
+        if(this.canActivate() && this.rollChanceToActivate() && this.ability.canActivate(this) && this.cooldownTimer == 0 && (!this.owner.isSilenced() || !this.silencable) && this.stacks != 0){
             this.setCooldown();
             if(this.stacks > 0){
                 this.stacks--;
@@ -32,11 +34,11 @@ public class OnHitSpecialAbilites extends SpecialAbility{
     }
 
     private boolean rollChanceToActivate(){
-        if(this.chanceToAcitvate < 100){
+        if(this.chanceToActivate < 100){
             double maxRoll = 100;
             double minRoll = 1;
             double roll = (int)(Math.random()*(maxRoll-minRoll+1))+minRoll;
-            if(roll<=this.chanceToAcitvate){
+            if(roll<=this.chanceToActivate){
                 return true;
             }
             return false;
@@ -46,6 +48,9 @@ public class OnHitSpecialAbilites extends SpecialAbility{
         }
     }
 
+    boolean canActivate(){
+        return (this.getOwner().getCurrentHp() >= (this.getOwner().getMaxHp()*this.hpThreshold/100) || this.hpThreshold < 0);
+    }
     @Override
     public void removeSpecialAbility() {
         this.owner.getSpecialAbilities().remove(this);

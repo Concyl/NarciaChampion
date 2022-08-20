@@ -128,6 +128,10 @@ public abstract class Hero {
         if(specialAbility instanceof TimeBasedSpecialAbility){
             this.getTimespecialAbilities().add((TimeBasedSpecialAbility) specialAbility);
         }
+        if(this.getFullname() != null){
+            String s =(this.getFullname()+" receives "+specialAbility.getName()+" from "+specialAbility.getPreciseOrigin());
+            this.getBattlefield().getCombatText().addCombatText(s);
+        }
     }
 
     private int distanceToTarget(){

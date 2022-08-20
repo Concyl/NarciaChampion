@@ -18,7 +18,7 @@ public class PercentHeal extends Ability {
         ArrayList<Hero> targets = specialAbility.getTarget().getTarget();
         for (Hero target : targets) {
             if (target.getCurrentHp() > 0) {
-                target.heal(percentageamount, specialAbility.getPreciseOrigin());
+                target.heal(percentageamount, specialAbility.getName());
             }
         }
     }

@@ -5,11 +5,12 @@
     "cooldownTimer": 0,
     "silencable": false,
     "name": "Dyna Heal",
-    "preciseOrigin": "Heal ohne Stacks",
+    "preciseOrigin": "Baseline Ability",
     "removable": false,
     "timer": 1500,
     "cooldown": 30,
-    "chanceToAcitvate": 100,
+    "chanceToActivate": 100,
+    "hpThreshold": -1,
     "stacks": -1,
     "ability": {
       "typename": "backend.app.Buffs.SpecificAbilities.PercentHeal",
@@ -26,11 +27,12 @@
     "cooldownTimer": 0,
     "silencable": false,
     "name": "Weak Heal",
-    "preciseOrigin": "Heal 3 Stacks",
+    "preciseOrigin": "",
     "removable": false,
     "timer": 1500,
     "cooldown": 30,
-    "chanceToAcitvate": 80,
+    "chanceToActivate": 80,
+    "hpThreshold": -1,
     "stacks": 3,
     "ability": {
       "typename": "backend.app.Buffs.SpecificAbilities.PercentHeal",
@@ -47,13 +49,32 @@
     "cooldownTimer": 0,
     "silencable": false,
     "name": "Time Heal",
-    "preciseOrigin": "Time Percent Heal",
+    "preciseOrigin": "Baseline Ability",
     "removable": false,
     "timer": 500,
     "cooldown": 30,
     "ability": {
       "typename": "backend.app.Buffs.SpecificAbilities.PercentHeal",
       "percentage": 9
+    },
+    "target": {
+      "typename": "backend.app.Targets.SelfTarget",
+      "ignoresStealth": false
+    }
+  },
+  {
+    "typename": "backend.app.Buffs.TimeBasedSpecialAbility",
+    "id": 3,
+    "cooldownTimer": 0,
+    "silencable": false,
+    "name": "Create Time Heal",
+    "preciseOrigin": "Baseline Ability",
+    "removable": false,
+    "timer": 121,
+    "cooldown": 30,
+    "ability": {
+      "typename": "backend.app.Buffs.SpecificAbilities.CreateSpecialAbility",
+      "id": 2
     },
     "target": {
       "typename": "backend.app.Targets.SelfTarget",

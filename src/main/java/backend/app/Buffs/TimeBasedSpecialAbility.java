@@ -21,11 +21,11 @@ public class TimeBasedSpecialAbility extends SpecialAbility{
 
     @Override
     public void update() {
-        super.update();
         if (this.cooldownTimer == 0 && (!this.owner.isSilenced() || !this.silencable) && this.ability.canActivate(this)) {
             this.setCooldown();
             this.applySkill();
         }
+        super.update();
     }
 
     @Override
