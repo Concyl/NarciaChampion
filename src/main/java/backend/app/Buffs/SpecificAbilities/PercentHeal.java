@@ -2,7 +2,10 @@ package backend.app.Buffs.SpecificAbilities;
 
 import backend.app.Buffs.Ability;
 import backend.app.Buffs.SpecialAbility;
+import backend.app.Hero;
 import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
 
 public class PercentHeal extends Ability {
     double percentage;
@@ -12,14 +15,16 @@ public class PercentHeal extends Ability {
     @Override
     public void applySkill(SpecialAbility specialAbility) {
         double percentageamount =specialAbility.getOwner().getMaxHp()*(percentage/100);
-        specialAbility.getOwner().heal(percentageamount,specialAbility.getPreciseOrigin());
+        ArrayList<Hero> targets = specialAbility.getTarget().getTarget();
+        for (Hero target : targets) {
+            if (target.getCurrentHp() > 0) {
+                target.heal(percentageamount, specialAbility.getPreciseOrigin());
+            }
+        }
     }
 
     @Override
     public boolean canActivate(SpecialAbility specialAbility){
-        if(specialAbility.getOwner().isAlive()){
-            return true;
-        }
-        return false;
+        return true;
     }
 }

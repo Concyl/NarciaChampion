@@ -9,11 +9,15 @@
     "removable": false,
     "timer": 1500,
     "cooldown": 30,
-    "chanceToAcitvate": 10,
+    "chanceToAcitvate": 100,
     "stacks": -1,
     "ability": {
       "typename": "backend.app.Buffs.SpecificAbilities.PercentHeal",
       "percentage": 9
+    },
+    "target": {
+      "typename": "backend.app.Targets.SelfTarget",
+      "ignoresStealth": false
     }
   },
   {
@@ -31,6 +35,10 @@
     "ability": {
       "typename": "backend.app.Buffs.SpecificAbilities.PercentHeal",
       "percentage": 9
+    },
+    "target": {
+      "typename": "backend.app.Targets.SelfTarget",
+      "ignoresStealth": false
     }
   },
   {
@@ -39,13 +47,17 @@
     "cooldownTimer": 0,
     "silencable": false,
     "name": "Time Heal",
-    "preciseOrigin": "Base Line Ability",
+    "preciseOrigin": "Time Percent Heal",
     "removable": false,
     "timer": 500,
     "cooldown": 30,
     "ability": {
       "typename": "backend.app.Buffs.SpecificAbilities.PercentHeal",
       "percentage": 9
+    },
+    "target": {
+      "typename": "backend.app.Targets.SelfTarget",
+      "ignoresStealth": false
     }
   }
 ]

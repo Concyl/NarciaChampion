@@ -13,7 +13,7 @@ import org.json.simple.JSONObject;
 
 public class HeroInitController {
     private ArrayList<JSONObject> heroJSONList;
-    private ArrayList<JSONObject> specialAbilitiesJSON;
+    public static ArrayList<JSONObject> specialAbilitiesJSON;
     private ArrayList<JSONObject> talentJSON;
 
     public HeroInitController() {
@@ -53,6 +53,7 @@ public class HeroInitController {
             Hero initHero = mapIdstoHeroes(heroIds.get(i),heroJSON);
             for(int j = 0; j<abilities.size();j++){
                 initHero.addSpecialAbility(abilities.get(j));
+                abilities.get(j).init(initHero,initHero);
             }
             initalizedHeroes.add(initHero);
         }

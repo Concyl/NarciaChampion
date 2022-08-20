@@ -1,6 +1,7 @@
 package backend.app.Buffs;
 
 import backend.app.Hero;
+import backend.app.Targets.Target;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,10 @@ public abstract class SpecialAbility {
     @Getter @Setter protected int timer;
     @Getter @Setter protected int cooldown;
     @Getter @Setter protected Ability ability;
+    @Getter @Setter protected Target target;
     @Getter @Setter protected int id;
+
+    JSONObject jsontarget;
 
     public SpecialAbility(int cooldown,int timer, boolean silencable, String name, Hero origin,Hero owner, String preciseOrigin, boolean removable) {
         this.cooldown = cooldown;
@@ -53,6 +57,7 @@ public abstract class SpecialAbility {
                 (boolean) specialJSON.get("removable"),
                 (int)(long) specialJSON.get("id"));
        this.ability = Ability.fromJSON((JSONObject) specialJSON.get("ability"));
+       this.jsontarget = (JSONObject) specialJSON.get("target");
     }
 
     public static SpecialAbility fromJSON(JSONObject data) {
@@ -93,6 +98,7 @@ public abstract class SpecialAbility {
     public void init(Hero origin,Hero owner){
         this.origin = origin;
         this.owner = owner;
+        this.target = Target.fromJSON(owner,this.jsontarget);
     }
 
     public abstract void removeSpecialAbility();
