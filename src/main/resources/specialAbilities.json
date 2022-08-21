@@ -19,7 +19,8 @@
     "target": {
       "typename": "backend.app.Targets.SelfTarget",
       "ignoresStealth": false
-    }
+    },
+    "conditions": [0]
   },
   {
     "typename": "backend.app.Buffs.OnHitSpecialAbilites",
@@ -41,7 +42,8 @@
     "target": {
       "typename": "backend.app.Targets.SelfTarget",
       "ignoresStealth": false
-    }
+    },
+    "conditions": [0]
   },
   {
     "typename": "backend.app.Buffs.TimeBasedSpecialAbility",
@@ -60,7 +62,8 @@
     "target": {
       "typename": "backend.app.Targets.SelfTarget",
       "ignoresStealth": false
-    }
+    },
+    "conditions": [0]
   },
   {
     "typename": "backend.app.Buffs.TimeBasedSpecialAbility",
@@ -79,6 +82,7 @@
     "target": {
       "typename": "backend.app.Targets.SelfTarget",
       "ignoresStealth": false
-    }
+    },
+    "conditions": [0]
   }
 ]

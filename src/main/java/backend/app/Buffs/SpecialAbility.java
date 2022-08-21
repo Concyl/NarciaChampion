@@ -1,11 +1,16 @@
 package backend.app.Buffs;
 
+import backend.app.Conditions.Condition;
+import backend.app.DataLoader;
 import backend.app.Hero;
+import backend.app.HeroInitController;
 import backend.app.Targets.Target;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
 
 public abstract class SpecialAbility {
 
@@ -21,6 +26,7 @@ public abstract class SpecialAbility {
     @Getter @Setter protected Ability ability;
     @Getter @Setter protected Target target;
     @Getter @Setter protected int id;
+    @Getter @Setter protected ArrayList<Condition> conditions = new ArrayList<>();
 
     JSONObject jsontarget;
 
@@ -58,6 +64,7 @@ public abstract class SpecialAbility {
                 (int)(long) specialJSON.get("id"));
        this.ability = Ability.fromJSON((JSONObject) specialJSON.get("ability"));
        this.jsontarget = (JSONObject) specialJSON.get("target");
+       this.initConditionsFromIdArray((JSONArray) specialJSON.get("conditions"));
     }
 
     public static SpecialAbility fromJSON(JSONObject data) {
@@ -99,6 +106,28 @@ public abstract class SpecialAbility {
         this.origin = origin;
         this.owner = owner;
         this.target = Target.fromJSON(owner,this.jsontarget);
+    }
+
+    public void initConditionsFromIdArray(JSONArray data){
+        for(int i =0;i<data.size();i++){
+            int id = Integer.valueOf(data.get(i).toString());
+            this.conditions.add(getConditionFromID(id));
+        }
+    }
+
+    private Condition getConditionFromID(int id){
+        JSONObject jsonObject =DataLoader.getIDObjectfromJSON(id, HeroInitController.conditionJSON,"id");
+        Condition condition = Condition.fromJSON(jsonObject);
+        return condition;
+    }
+
+    public boolean checkConditions(){
+        for(Condition condition : this.conditions){
+            if(!condition.checkCondition(this)){
+                return false;
+            }
+        }
+        return true;
     }
 
     public abstract void removeSpecialAbility();

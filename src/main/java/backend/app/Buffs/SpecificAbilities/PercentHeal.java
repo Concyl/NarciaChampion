@@ -22,9 +22,4 @@ public class PercentHeal extends Ability {
             }
         }
     }
-
-    @Override
-    public boolean canActivate(SpecialAbility specialAbility){
-        return true;
-    }
 }

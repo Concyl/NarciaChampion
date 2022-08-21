@@ -1,0 +1,7 @@
+[
+  {
+    "typename": "backend.app.Conditions.HpUnderThresholdCondition",
+    "id": 0,
+    "percentage": 50
+  }
+]

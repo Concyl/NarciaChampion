@@ -15,11 +15,13 @@ public class HeroInitController {
     private ArrayList<JSONObject> heroJSONList;
     public static ArrayList<JSONObject> specialAbilitiesJSON;
     private ArrayList<JSONObject> talentJSON;
+    public static ArrayList<JSONObject> conditionJSON;
 
     public HeroInitController() {
         this.heroJSONList = DataLoader.loadHeroData();
         this.specialAbilitiesJSON = DataLoader.loadSpecialAbilites("/src/main/resources/specialAbilities.json");
         this.talentJSON = DataLoader.loadSpecialAbilites("/src/main/resources/talent.json");
+        this.conditionJSON = DataLoader.loadSpecialAbilites("/src/main/resources/conditions.json");
     }
 
     public void createHeroObjectswithIds() {

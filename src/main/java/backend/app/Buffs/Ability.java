@@ -17,8 +17,4 @@ public abstract class Ability {
         }
     }
     public abstract void applySkill(SpecialAbility specialAbility);
-
-    public boolean canActivate(SpecialAbility specialAbility){
-        return true;
-    }
 }

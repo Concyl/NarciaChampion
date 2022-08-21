@@ -21,7 +21,7 @@ public class TimeBasedSpecialAbility extends SpecialAbility{
 
     @Override
     public void update() {
-        if (this.cooldownTimer == 0 && (!this.owner.isSilenced() || !this.silencable) && this.ability.canActivate(this)) {
+        if (this.cooldownTimer == 0 && (!this.owner.isSilenced() || !this.silencable) && this.checkConditions()) {
             this.setCooldown();
             this.applySkill();
         }

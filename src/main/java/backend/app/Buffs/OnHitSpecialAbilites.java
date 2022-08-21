@@ -21,7 +21,7 @@ public class OnHitSpecialAbilites extends SpecialAbility{
     }
 
     public void trigger(){
-        if(this.canActivate() && this.rollChanceToActivate() && this.ability.canActivate(this) && this.cooldownTimer == 0 && (!this.owner.isSilenced() || !this.silencable) && this.stacks != 0){
+        if(this.canActivate() && this.rollChanceToActivate() && this.checkConditions() && this.cooldownTimer == 0 && (!this.owner.isSilenced() || !this.silencable) && this.stacks != 0){
             this.setCooldown();
             if(this.stacks > 0){
                 this.stacks--;
