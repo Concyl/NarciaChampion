@@ -84,5 +84,30 @@
       "ignoresStealth": false
     },
     "conditions": [0]
+  },
+  {
+    "typename": "backend.app.Buffs.TimeBasedSpecialAbility",
+    "id": 4,
+    "cooldownTimer": 0,
+    "silencable": false,
+    "name": "Damage scuffed RNG on Timer",
+    "preciseOrigin": "Baseline Ability",
+    "removable": false,
+    "timer": 121,
+    "cooldown": 30,
+    "ability": {
+      "typename": "backend.app.Buffs.SpecificAbilities.DealDamage",
+      "percentage": 3,
+      "type": "NORMAL",
+      "ignores": [],
+      "id": 1
+    },
+    "target": {
+      "typename": "backend.app.Targets.RandomTargetsWithDuplicates",
+      "ignoresStealth": false,
+      "amount": 2,
+      "team": false
+    },
+    "conditions": [0]
   }
 ]

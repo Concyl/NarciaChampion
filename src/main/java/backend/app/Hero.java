@@ -61,6 +61,9 @@ public abstract class Hero {
     @Getter @Setter private int reflecttalent=0;
     @Getter @Setter private int reflectother=0;
 
+    @Getter @Setter private boolean stealth = false;
+    @Getter @Setter private boolean confusion = false;
+
     @Getter @Setter private int autoattackrange;
     @Getter @Setter private double attackspeed;
     @Getter @Setter private double realattackspeed;
@@ -229,7 +232,7 @@ public abstract class Hero {
         }
     }
 
-    protected ArrayList<Hero> getEnemyTeam(){
+    public ArrayList<Hero> getEnemyTeam(){
         if(this.team == Team.BLUE){
             return battlefield.activeredHeroes;
         }
@@ -238,7 +241,7 @@ public abstract class Hero {
         }
     }
 
-    protected ArrayList<Hero> getAlliesTeam(){
+    public ArrayList<Hero> getAlliesTeam(){
         if(this.team == Team.BLUE){
             return battlefield.activeblueHeroes;
         }

@@ -30,6 +30,9 @@ public class HeroInitController {
 
         ArrayList<Integer> idListRedTeam = new ArrayList<>();
         idListRedTeam.add(1000);
+        idListRedTeam.add(1001);
+        idListRedTeam.add(1002);
+        idListRedTeam.add(1003);
         ArrayList<Hero> blueHeroes = initHeroFromIds(idListBlueTeam);
         ArrayList<Hero> redHeroes = initHeroFromIds(idListRedTeam);
         battlefieldMainLoop(blueHeroes, redHeroes);
@@ -80,7 +83,7 @@ public class HeroInitController {
             case 1000:
                 return new DummyNoobHeld(jsonObject);
             default:
-                return new Dynamica(jsonObject);
+                return new DummyNoobHeld(jsonObject);
         }
     }
 
