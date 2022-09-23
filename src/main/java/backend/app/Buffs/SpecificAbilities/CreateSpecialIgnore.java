@@ -9,13 +9,10 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
-public class DealDamage extends Ability {
-    private double percentage;
-    private DamageEffect.DamageType type;
+public class CreateSpecialIgnore extends Ability {
+
     private ArrayList<DamageEffect.SpecialIgnores> ignores = new ArrayList<>();
-    public DealDamage(JSONObject specialJSON){
-        this.percentage = (double)(long) specialJSON.get("percentage");
-        this.type = DamageEffect.DamageType.valueOf((String)specialJSON.get("type"));
+    public CreateSpecialIgnore(JSONObject specialJSON){
         JSONArray jsonArray = (JSONArray) specialJSON.get("ignores");
         for(int i = 0;i<jsonArray.size();i++){
             this.ignores.add(DamageEffect.SpecialIgnores.valueOf(jsonArray.get(i).toString()));

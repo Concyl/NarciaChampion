@@ -1,5 +1,7 @@
 package backend.app;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 
 public class DamageEffect {
@@ -10,6 +12,7 @@ public class DamageEffect {
         DAMAGECAP, DAMAGETOLP, CANTMISS, DAMAGEREDUCTION, NOREFLECTEDDAMAGE, IGNOREREFLECT, STEALTH, CONFUSION
     }
 
+    @Getter private boolean hit = false;
     private DamageType damageType;
     private double multiplier;
     private Hero attacker;
@@ -67,7 +70,6 @@ public class DamageEffect {
             default:
                 break;
         }
-        attacker.addAutoEnergy();
     }
 
     private int dealNormaldamage(){
@@ -258,11 +260,12 @@ public class DamageEffect {
         if(critdef>critchance){
             return damage;
         }
-        double critical = (critchance-critdef)/(critchance-critdef+10000);
-        if(critical>=Math.random()){
+        double critical = (((critchance/(critchance+1000))*10000)-((critdef/(critdef+1000))*10000))*0.1;
+        double rnd = Math.random()*1000;
+        if(critical>=rnd){
             double critdamage = this.attacker.getCritdamage();
             damage *= 1.5+(critdamage/10000);
-            double critpercentage = Math.floor(critical*10000)/100;
+            double critpercentage = Math.floor(critical)/10;
             String combattext = this.attacker.getFullname()+" crits, with "+ critpercentage+"% critchance";
             this.attacker.getBattlefield().getCombatText().addCombatText(combattext);
         }
@@ -270,11 +273,13 @@ public class DamageEffect {
     }
 
     private boolean hitCheck(){
-        if(this.specialIgnores.contains(SpecialIgnores.CANTMISS) || attacker.getPassiveIgnore(SpecialIgnores.DAMAGECAP)){
+        if(this.specialIgnores.contains(SpecialIgnores.CANTMISS) || attacker.getPassiveIgnore(SpecialIgnores.CANTMISS)){
+            this.hit = true;
             return true;
         }
         int hitcap = 10000;
         if(this.receiver.getEvasion()< this.attacker.getAccuracy()){
+            this.hit = true;
             return true;
         }
         int hitpluscap = this.attacker.getAccuracy()+hitcap;
@@ -284,6 +289,7 @@ public class DamageEffect {
         int randlower = this.receiver.getEvasion()- this.attacker.getAccuracy();
         double rand = Math.floor(Math.random()*hitcap);
         if(rand>=randlower){
+            this.hit = true;
             return true;
         }
         return false;

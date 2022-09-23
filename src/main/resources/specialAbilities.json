@@ -4,7 +4,7 @@
     "id": 0,
     "cooldownTimer": 0,
     "silencable": false,
-    "name": "Dyna Heal",
+    "name": "Small Heal",
     "preciseOrigin": "Baseline Ability",
     "removable": false,
     "timer": 1500,
@@ -70,18 +70,20 @@
     "id": 3,
     "cooldownTimer": 0,
     "silencable": false,
-    "name": "Create Time Heal",
+    "name": "Create Dyna AOE",
     "preciseOrigin": "Baseline Ability",
     "removable": false,
-    "timer": 121,
-    "cooldown": 30,
+    "timer": 1201,
+    "cooldown": 210,
     "ability": {
       "typename": "backend.app.Buffs.SpecificAbilities.CreateSpecialAbility",
-      "id": 1
+      "id": 6
     },
     "target": {
-      "typename": "backend.app.Targets.SelfTarget",
-      "ignoresStealth": false
+      "typename": "backend.app.Targets.RandomTargetsWithDuplicates",
+      "ignoresStealth": false,
+      "amount": 2,
+      "team": "ENEMY"
     },
     "conditions": [0]
   },
@@ -106,8 +108,58 @@
       "typename": "backend.app.Targets.RandomTargetsWithDuplicates",
       "ignoresStealth": false,
       "amount": 2,
-      "team": false
+      "team": "ENEMY"
     },
     "conditions": [0]
+  },
+  {
+    "typename": "backend.app.Buffs.TimeBasedSpecialAbility",
+    "id": 5,
+    "cooldownTimer": 0,
+    "silencable": false,
+    "name": "Damage All in Area scuffed RNG on Timer",
+    "preciseOrigin": "Baseline Ability",
+    "removable": false,
+    "timer": 121,
+    "cooldown": 30,
+    "ability": {
+      "typename": "backend.app.Buffs.SpecificAbilities.DealDamage",
+      "percentage": 3,
+      "type": "NORMAL",
+      "ignores": [],
+      "id": 1
+    },
+    "target": {
+      "typename": "backend.app.Targets.AllHeroesInArea",
+      "ignoresStealth": false,
+      "radius": 12,
+      "team": "ENEMY"
+    },
+    "conditions": [0]
+  },
+  {
+    "typename": "backend.app.Buffs.TimeBasedSpecialAbility",
+    "id": 6,
+    "cooldownTimer": 0,
+    "silencable": false,
+    "name": "Dyna Damage Sphere",
+    "preciseOrigin": "Dyna AOE",
+    "removable": false,
+    "timer": 121,
+    "cooldown": 6,
+    "ability": {
+      "typename": "backend.app.Buffs.SpecificAbilities.DealDamage",
+      "percentage": 2,
+      "type": "NORMAL",
+      "ignores": [],
+      "id": 1
+    },
+    "target": {
+      "typename": "backend.app.Targets.AllHeroesInArea",
+      "ignoresStealth": false,
+      "radius": 12,
+      "team": "ALLY"
+    },
+    "conditions": []
   }
 ]

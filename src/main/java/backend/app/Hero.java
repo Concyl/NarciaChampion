@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import backend.app.Buffs.*;
+import backend.app.Buffs.SpecificAbilities.CreateSpecialIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;
@@ -135,6 +136,10 @@ public abstract class Hero {
             String s =(this.getFullname()+" receives "+specialAbility.getName()+" from "+specialAbility.getPreciseOrigin());
             this.getBattlefield().getCombatText().addCombatText(s);
         }
+    }
+
+    public void addSpecialEffect(ArrayList<DamageEffect.SpecialIgnores> ignores){
+
     }
 
     private int distanceToTarget(){
@@ -279,6 +284,9 @@ public abstract class Hero {
             if(!isBlind){
                 DamageEffect damage = new DamageEffect(this,this.target, DamageEffect.DamageType.NORMAL,1, "Auto Attack");
                 damage.applyDamage();
+                if(damage.isHit()){
+                    this.addAutoEnergy();
+                }
             }
         }
     }

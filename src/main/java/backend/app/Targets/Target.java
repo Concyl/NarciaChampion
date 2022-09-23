@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public abstract class Target {
     public enum TargetType{
-        SELF,ALLY,ENEMY,TARGET;
+        ALLY,ENEMY,SELF;
     }
     @Setter @Getter private Hero caster;
     @Setter @Getter private boolean ignoresStealth;
@@ -54,14 +54,14 @@ public abstract class Target {
     }
 
 
-    protected ArrayList<Hero>HeroesinRange(int radius, int xpos, int ypos,ArrayList<Hero> heroes){
+    protected ArrayList<Hero> heroesinRange(int radius, int xpos, int ypos, ArrayList<Hero> heroes){
         ArrayList<Hero> aliveheroes = targetableHeroes(heroes);
         ArrayList<Hero> inRangeHeroes = new ArrayList<>();
         for(int i = 0;i<aliveheroes.size();i++) {
             double xdistance = Math.abs(xpos-aliveheroes.get(i).getXCoordinate());
             double ydistance = Math.abs(ypos-aliveheroes.get(i).getYCoordinate());
             double distance = Math.sqrt((xdistance*xdistance)+(ydistance*ydistance));
-            if(distance<= radius){
+            if(distance<= radius*10){
                 inRangeHeroes.add(aliveheroes.get(i));
             }
         }

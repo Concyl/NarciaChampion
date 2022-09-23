@@ -7,13 +7,12 @@ import java.util.ArrayList;
 
 public class RandomTargetsWithDuplicates extends Target{
     private int amount;
-    private boolean team;
-    private ArrayList<Hero> focusHeroes = new ArrayList<>();
+    private TargetType team;
 
     public RandomTargetsWithDuplicates(JSONObject specialJSON) {
         this.setIgnoresStealth((boolean) specialJSON.get("ignoresStealth"));
         this.amount = (int)(long) specialJSON.get("amount");
-        this.team = (boolean) specialJSON.get("team");
+        this.team = Target.TargetType.valueOf((String)specialJSON.get("team"));
     }
 
     public ArrayList<Hero> setTargets(ArrayList<Hero> heroes){
@@ -32,7 +31,7 @@ public class RandomTargetsWithDuplicates extends Target{
 
     @Override
     public ArrayList<Hero> getTarget() {
-        if(this.team){
+        if(this.team == TargetType.ALLY){
             return this.setTargets(this.getAllies());
         }
         else {
