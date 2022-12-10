@@ -72,7 +72,7 @@ public abstract class Hero {
     private double autoattackcooldown;
     private boolean isBlind=false;
 
-    @Getter private final ArrayList<DamageEffect.SpecialIgnores> passiveIgnores = new ArrayList<>();
+    @Getter private final ArrayList<SpecialBuff.SpecialIgnores> passiveIgnores = new ArrayList<>();
 
     @Getter private final ArrayList<Talent> talents = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> buffs = new ArrayList<>();
@@ -138,7 +138,10 @@ public abstract class Hero {
         }
     }
 
-    public void addSpecialEffect(ArrayList<DamageEffect.SpecialIgnores> ignores){
+    public void addSpecialBuff(SpecialBuff buff){
+
+    }
+    public void removeSpecialBuff(SpecialBuff buff){
 
     }
 
@@ -413,7 +416,7 @@ public abstract class Hero {
     }
 
     //TODO
-    public boolean getPassiveIgnore(DamageEffect.SpecialIgnores ignore){
+    public boolean getPassiveIgnore(SpecialBuff.SpecialIgnores ignore){
         return this.getPassiveIgnores().contains(ignore);
     }
 

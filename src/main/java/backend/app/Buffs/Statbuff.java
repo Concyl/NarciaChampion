@@ -1,6 +1,7 @@
 package backend.app.Buffs;
 
 import backend.app.Hero;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,14 @@ public class Statbuff extends Buff {
         this.isImmunity = isImmunity;
     }
 
+    public Statbuff(JSONObject json){
+        super(json);
+        this.type = Bufftype.valueOf((String)json.get("type"));
+        this.amount = (int)(long) json.get("amount");
+        this.isImmunity = (boolean) json.get("isImmunity");
+    }
+
+    @Override
     public void apply(){
         if(this.isImmunity){
            this.immunity();

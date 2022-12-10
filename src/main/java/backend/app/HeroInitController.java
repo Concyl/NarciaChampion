@@ -3,6 +3,7 @@ package backend.app;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import backend.app.Buffs.Buff;
 import backend.app.Buffs.SpecialAbility;
 import backend.app.Buffs.Talent;
 import backend.app.Heroes.DummyNoobHeld;
@@ -16,12 +17,14 @@ public class HeroInitController {
     public static ArrayList<JSONObject> specialAbilitiesJSON;
     private ArrayList<JSONObject> talentJSON;
     public static ArrayList<JSONObject> conditionJSON;
+    public static ArrayList<JSONObject> buffJSON;
 
     public HeroInitController() {
         this.heroJSONList = DataLoader.loadHeroData();
         this.specialAbilitiesJSON = DataLoader.loadSpecialAbilites("/src/main/resources/specialAbilities.json");
         this.talentJSON = DataLoader.loadSpecialAbilites("/src/main/resources/talent.json");
         this.conditionJSON = DataLoader.loadSpecialAbilites("/src/main/resources/conditions.json");
+        this.buffJSON = DataLoader.loadSpecialAbilites("/src/main/resources/buff.json");
     }
 
     public void createHeroObjectswithIds() {
@@ -30,9 +33,6 @@ public class HeroInitController {
 
         ArrayList<Integer> idListRedTeam = new ArrayList<>();
         idListRedTeam.add(1000);
-        idListRedTeam.add(1001);
-        idListRedTeam.add(1002);
-        idListRedTeam.add(1003);
         ArrayList<Hero> blueHeroes = initHeroFromIds(idListBlueTeam);
         ArrayList<Hero> redHeroes = initHeroFromIds(idListRedTeam);
         battlefieldMainLoop(blueHeroes, redHeroes);
@@ -53,16 +53,46 @@ public class HeroInitController {
         ArrayList<Hero> initalizedHeroes = new ArrayList<>();
         for (int i = 0; i < heroIds.size(); i++) {
             JSONObject heroJSON = DataLoader.getIDObjectfromJSON(heroIds.get(i),this.heroJSONList,"id");
-            ArrayList<Integer> specialIDJson = DataLoader.getJSONListfromJSON(heroJSON,"specialAbilities");
-            ArrayList<SpecialAbility> abilities = initSpecialAbilitiesFromIds(specialIDJson);
             Hero initHero = mapIdstoHeroes(heroIds.get(i),heroJSON);
-            for(int j = 0; j<abilities.size();j++){
-                initHero.addSpecialAbility(abilities.get(j));
-                abilities.get(j).init(initHero,initHero);
-            }
+            addSpecialAbilitesToHero(initHero,heroJSON);
+            addBuffsToHero(initHero,heroJSON);
             initalizedHeroes.add(initHero);
         }
         return initalizedHeroes;
+    }
+
+    private void addSpecialAbilitesToHero(Hero hero,JSONObject heroJSON){
+        ArrayList<Integer> specialIDJson = DataLoader.getJSONListfromJSON(heroJSON,"specialAbilities");
+        ArrayList<SpecialAbility> abilities = initSpecialAbilitiesFromIds(specialIDJson);
+        for(int j = 0; j<abilities.size();j++){
+            hero.addSpecialAbility(abilities.get(j));
+            abilities.get(j).init(hero,hero);
+        }
+    }
+
+    private void addBuffsToHero(Hero hero,JSONObject heroJSON){
+        ArrayList<Integer> idjson = DataLoader.getJSONListfromJSON(heroJSON,"buffs");
+        ArrayList<Buff> buffs = getBuffsFromIds(idjson);
+        for(Buff buff : buffs){
+            buff.setTarget(hero);
+            buff.setOrigin(hero);
+            buff.apply();
+        }
+    }
+
+    private ArrayList<Buff> getBuffsFromIds(ArrayList<Integer> list){
+        ArrayList<Buff> buffs = new ArrayList<>();
+        for(int i =0;i<list.size();i++){
+            Buff buff = getBuffFromJSON(list.get(i));
+            buffs.add(buff);
+        }
+        return buffs;
+    }
+
+    public Buff getBuffFromJSON(int id){
+        JSONObject special = DataLoader.getIDObjectfromJSON(id,buffJSON,"id");
+        Buff buff =  Buff.fromJSON(special);
+        return buff;
     }
 
     private ArrayList<SpecialAbility> initSpecialAbilitiesFromIds(ArrayList<Integer> specialIds) {

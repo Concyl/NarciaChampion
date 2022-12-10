@@ -18,7 +18,8 @@
         "fraction": "SAINT",
         "isFlying": false,
         "isLegendary": false,
-        "specialAbilities":[3]
+        "specialAbilities":[3],
+        "buffs": [0,2]
     },
     {
         "id": 1000,
@@ -38,7 +39,8 @@
         "fraction": "SAINT",
         "isFlying": false,
         "isLegendary": false,
-        "specialAbilities":[0]
+        "specialAbilities":[0],
+        "buffs": [1]
     },
     {
         "id": 1001,
@@ -58,7 +60,8 @@
         "fraction": "SAINT",
         "isFlying": false,
         "isLegendary": false,
-        "specialAbilities":[0]
+        "specialAbilities":[0],
+        "buffs": [1]
     },
     {
         "id": 1002,
@@ -78,7 +81,7 @@
         "fraction": "SAINT",
         "isFlying": false,
         "isLegendary": false,
-        "specialAbilities":[0]
+        "buffs": [1]
     },
     {
         "id": 1003,
@@ -98,7 +101,7 @@
         "fraction": "SAINT",
         "isFlying": false,
         "isLegendary": false,
-        "specialAbilities":[0]
+        "buffs": [1]
     },
     {
         "id": 1,

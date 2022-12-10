@@ -1,0 +1,36 @@
+[
+  {
+    "typename": "backend.app.Buffs.Statbuff",
+    "id": 0,
+    "isBuff": true,
+    "preciseOrigin": "Baseline Buff",
+    "isRemovable": false,
+    "timer": 1800,
+    "name": "Attack Buff 50%",
+    "type": "ATTACK",
+    "amount": 50,
+    "isImmunity": false
+  },
+  {
+    "typename": "backend.app.Buffs.Statbuff",
+    "id": 1,
+    "isBuff": true,
+    "preciseOrigin": "Baseline Buff",
+    "isRemovable": false,
+    "timer": 1800,
+    "name": "Def Buff 50%",
+    "type": "DEF",
+    "amount": 50,
+    "isImmunity": false
+  },
+  {
+    "typename": "backend.app.Buffs.SpecialBuff",
+    "id": 2,
+    "isBuff": true,
+    "preciseOrigin": "Baseline SpecialBuff",
+    "isRemovable": false,
+    "timer": 1800,
+    "name": "Ignore DamageCaps",
+    "type": "DAMAGECAP"
+  }
+]
