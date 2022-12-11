@@ -1,6 +1,6 @@
 package backend.app;
 
-import backend.app.Buffs.SpecialBuff;
+import backend.app.Buffs.SpecialIgnores;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class DamageEffect {
     private Hero attacker;
     private Hero receiver;
     private String origin;
-    public final ArrayList<SpecialBuff.SpecialIgnores> specialIgnores = new ArrayList<>();
+    public final ArrayList<SpecialIgnores> specialIgnores = new ArrayList<>();
     private double narciaMultiplicator=1;
 
     public DamageEffect(Hero attacker, Hero receiver, DamageType type, double multiplier, String origin) {
@@ -28,7 +28,7 @@ public class DamageEffect {
         this.origin = origin;
     }
 
-    public DamageEffect(Hero attacker, Hero receiver, DamageType type, double multiplier, String origin,ArrayList<SpecialBuff.SpecialIgnores> ignores) {
+    public DamageEffect(Hero attacker, Hero receiver, DamageType type, double multiplier, String origin,ArrayList<SpecialIgnores> ignores) {
         this.damageType = type;
         this.attacker = attacker;
         this.receiver = receiver;
@@ -39,7 +39,7 @@ public class DamageEffect {
         }
     }
 
-    public DamageEffect(Hero attacker, Hero receiver, DamageType type, double multiplier, String origin, SpecialBuff.SpecialIgnores ignores) {
+    public DamageEffect(Hero attacker, Hero receiver, DamageType type, double multiplier, String origin, SpecialIgnores ignores) {
         this.damageType = type;
         this.attacker = attacker;
         this.receiver = receiver;
@@ -89,7 +89,7 @@ public class DamageEffect {
 
     private boolean damageToLpCheck(){
         boolean damageToLpactive = this.receiver.getDamageToLP();
-        if(damageToLpactive && !this.specialIgnores.contains(SpecialBuff.SpecialIgnores.DAMAGETOLP) && !this.attacker.getPassiveIgnore(SpecialBuff.SpecialIgnores.DAMAGETOLP)){
+        if(damageToLpactive && !this.specialIgnores.contains(SpecialIgnores.DAMAGETOLP) && !this.attacker.getPassiveIgnore(SpecialIgnores.DAMAGETOLP)){
             return true;
         }
         return false;
@@ -142,7 +142,7 @@ public class DamageEffect {
             return;
         }
         int oldHp = (int)this.receiver.getCurrentHp();
-        if( !this.specialIgnores.contains(SpecialBuff.SpecialIgnores.DAMAGEREDUCTION) && !this.attacker.getPassiveIgnore(SpecialBuff.SpecialIgnores.DAMAGEREDUCTION) && this.damageType==DamageType.NORMAL){
+        if( !this.specialIgnores.contains(SpecialIgnores.DAMAGEREDUCTION) && !this.attacker.getPassiveIgnore(SpecialIgnores.DAMAGEREDUCTION) && this.damageType==DamageType.NORMAL){
             damage = damageReduction(damage);
         }
         if(this.receiver.getDamageCap() > 0){
@@ -175,9 +175,9 @@ public class DamageEffect {
     private int reflect(int damage){
         int reflectDamage = damage;
         int reflect = this.receiver.getReflect();
-        if(reflect != 0 && !this.specialIgnores.contains(SpecialBuff.SpecialIgnores.IGNOREREFLECT) && !this.attacker.getPassiveIgnore(SpecialBuff.SpecialIgnores.IGNOREREFLECT)) {
+        if(reflect != 0 && !this.specialIgnores.contains(SpecialIgnores.IGNOREREFLECT) && !this.attacker.getPassiveIgnore(SpecialIgnores.IGNOREREFLECT)) {
             reflectDamage = damage * (100 - reflect) / 100;
-            if (!this.specialIgnores.contains(SpecialBuff.SpecialIgnores.NOREFLECTEDDAMAGE)) {
+            if (!this.specialIgnores.contains(SpecialIgnores.NOREFLECTEDDAMAGE)) {
                 int reflectedDamage = damage - reflectDamage;
                 this.receiveReflectDamage(reflectedDamage);
             }
@@ -194,7 +194,7 @@ public class DamageEffect {
     }
 
     private int damageCap(int damage,Hero attacker, Hero defender){
-        if(!this.specialIgnores.contains(SpecialBuff.SpecialIgnores.DAMAGECAP) && !attacker.getPassiveIgnore(SpecialBuff.SpecialIgnores.DAMAGECAP)){
+        if(!this.specialIgnores.contains(SpecialIgnores.DAMAGECAP) && !attacker.getPassiveIgnore(SpecialIgnores.DAMAGECAP)){
             int damagecap = defender.getDamageCap();
             if(damagecap<damage){
                 damage = damagecap;
@@ -272,7 +272,7 @@ public class DamageEffect {
     }
 
     private boolean hitCheck(){
-        if(this.specialIgnores.contains(SpecialBuff.SpecialIgnores.CANTMISS) || attacker.getPassiveIgnore(SpecialBuff.SpecialIgnores.CANTMISS)){
+        if(this.specialIgnores.contains(SpecialIgnores.CANTMISS) || attacker.getPassiveIgnore(SpecialIgnores.CANTMISS)){
             this.hit = true;
             return true;
         }

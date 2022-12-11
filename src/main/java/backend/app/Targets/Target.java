@@ -1,7 +1,6 @@
 package backend.app.Targets;
 
-import backend.app.Buffs.SpecialBuff;
-import backend.app.DamageEffect;
+import backend.app.Buffs.SpecialIgnores;
 import backend.app.Hero;
 import lombok.Getter;
 import lombok.Setter;
@@ -84,7 +83,7 @@ public abstract class Target {
     }
 
     protected ArrayList<Hero> filterStealthHeroes(ArrayList<Hero> heroes){
-        if(this.ignoresStealth || caster.getPassiveIgnore(SpecialBuff.SpecialIgnores.STEALTH)){
+        if(this.ignoresStealth || caster.getPassiveIgnore(SpecialIgnores.STEALTH)){
             return heroes;
         }
         ArrayList<Hero> aliveheroes = new ArrayList<>();

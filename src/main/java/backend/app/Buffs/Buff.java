@@ -49,8 +49,8 @@ public class Buff {
 
     public Buff(JSONObject json){
        this((String)json.get("preciseOrigin"),
-               (boolean) json.get("isRemovable"),
                (boolean) json.get("isBuff"),
+               (boolean) json.get("isRemovable"),
                (int)(long) json.get("timer"),
                (String)json.get("name"),
                (int)(long)json.get("id"));

@@ -2,7 +2,7 @@ package backend.app.Buffs.SpecificAbilities;
 
 import backend.app.Buffs.Ability;
 import backend.app.Buffs.SpecialAbility;
-import backend.app.Buffs.SpecialBuff;
+import backend.app.Buffs.SpecialIgnores;
 import backend.app.DamageEffect;
 import backend.app.Hero;
 import org.json.simple.JSONArray;
@@ -13,13 +13,13 @@ import java.util.ArrayList;
 public class DealDamage extends Ability {
     private double percentage;
     private DamageEffect.DamageType type;
-    private ArrayList<SpecialBuff.SpecialIgnores> ignores = new ArrayList<>();
+    private ArrayList<SpecialIgnores> ignores = new ArrayList<>();
     public DealDamage(JSONObject specialJSON){
         this.percentage = (double)(long) specialJSON.get("percentage");
         this.type = DamageEffect.DamageType.valueOf((String)specialJSON.get("type"));
         JSONArray jsonArray = (JSONArray) specialJSON.get("ignores");
         for(int i = 0;i<jsonArray.size();i++){
-            this.ignores.add(SpecialBuff.SpecialIgnores.valueOf(jsonArray.get(i).toString()));
+            this.ignores.add(SpecialIgnores.valueOf(jsonArray.get(i).toString()));
         }
     }
 

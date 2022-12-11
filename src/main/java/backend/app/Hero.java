@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import backend.app.Buffs.*;
-import backend.app.Buffs.SpecificAbilities.CreateSpecialIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;
@@ -72,8 +71,9 @@ public abstract class Hero {
     private double autoattackcooldown;
     private boolean isBlind=false;
 
-    @Getter private final ArrayList<SpecialBuff.SpecialIgnores> passiveIgnores = new ArrayList<>();
+    @Getter private final ArrayList<SpecialIgnores> passiveIgnores = new ArrayList<>();
 
+    @Getter private final ArrayList<Buff> allbuffs = new ArrayList<>();
     @Getter private final ArrayList<Talent> talents = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> buffs = new ArrayList<>();
     @Getter private final ArrayList<Statbuff> debuffs = new ArrayList<>();
@@ -126,21 +126,29 @@ public abstract class Hero {
 
     public void addSpecialAbility(SpecialAbility specialAbility){
         this.getSpecialAbilities().add(specialAbility);
-        if(specialAbility.getOwner() == null){
-            specialAbility.setOwner(this);
-        }
         if(specialAbility instanceof TimeBasedSpecialAbility){
             this.getTimespecialAbilities().add((TimeBasedSpecialAbility) specialAbility);
         }
-        if(this.getFullname() != null){
-            String s =(this.getFullname()+" receives "+specialAbility.getName()+" from "+specialAbility.getPreciseOrigin());
-            this.getBattlefield().getCombatText().addCombatText(s);
+    }
+
+    public void addDamageCap(SpecialBuff buff){
+        int newDamageCap = buff.getValue();
+        if(this.damageCap<0){
+            this.damageCap = newDamageCap;
         }
+        else{
+            if(this.damageCap>newDamageCap){
+                this.damageCap = newDamageCap;
+            }
+        }
+        this.allbuffs.add(buff);
     }
 
-    public void addSpecialBuff(SpecialBuff buff){
-
+    public void addPassiveIgnore(SpecialBuff buff){
+        this.passiveIgnores.add(buff.getType());
+        this.allbuffs.add(buff);
     }
+
     public void removeSpecialBuff(SpecialBuff buff){
 
     }
@@ -416,7 +424,7 @@ public abstract class Hero {
     }
 
     //TODO
-    public boolean getPassiveIgnore(SpecialBuff.SpecialIgnores ignore){
+    public boolean getPassiveIgnore(SpecialIgnores ignore){
         return this.getPassiveIgnores().contains(ignore);
     }
 

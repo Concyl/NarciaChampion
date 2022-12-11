@@ -21,6 +21,8 @@ public class Battlefield {
     ArrayList<Hero> redHeroes;
     ArrayList<Hero> activeblueHeroes;
     ArrayList<Hero> activeredHeroes;
+    ArrayList<InitContainer> blue;
+    ArrayList<InitContainer> red;
     Warden blueWarden;
     Warden redWarden;
     @Getter CombatText combatText;
@@ -43,33 +45,53 @@ public class Battlefield {
         }
     }
 
-    public Battlefield(ArrayList<Hero> blueHeroes, ArrayList<Hero> redHeroes,CombatText combatText) {
-        this.blueHeroes = blueHeroes;
-        this.redHeroes = redHeroes;
-        this.activeblueHeroes = blueHeroes;
-        this.activeredHeroes = redHeroes;
+    public Battlefield(ArrayList<InitContainer> blue, ArrayList<InitContainer> red,CombatText combatText) {
+        this.blue = blue;
+        this.red = red;
         this.combatText = combatText;
     }
 
     public void init() {
+        fillTeams();
         setStartingPostions();
         initWarden();
         setBattlefield();
+        initContainer(this.blue);
+        initContainer(this.red);
+    }
+
+    private void initContainer(ArrayList<InitContainer> containerList){
+        for(InitContainer container: containerList){
+            container.init();
+        }
+    }
+
+    private void fillTeams(){
+        ArrayList<Hero> blueHeroes = new ArrayList<>();
+        for(InitContainer container: this.blue){
+            blueHeroes.add(container.getHero());
+        }
+        this.blueHeroes = blueHeroes;
+        this.activeblueHeroes = blueHeroes;
+        ArrayList<Hero> redHeroes = new ArrayList<>();
+        for(InitContainer container: this.red){
+            redHeroes.add(container.getHero());
+        }
+        this.redHeroes = redHeroes;
+        this.activeredHeroes = redHeroes;
     }
 
     private void setBattlefield(){
-        for(int i = 0; i<this.blueHeroes.size();i++){
-            Hero blue = this.blueHeroes.get(i);
+        for (Hero blue : this.blueHeroes) {
             blue.setBattlefield(this);
             blue.setTeam(Hero.Team.BLUE);
-            blue.setFullname(blue.getTeam()+" "+blue.getName());
+            blue.setFullname(blue.getTeam() + " " + blue.getName());
             blue.init();
         }
-        for(int i = 0; i<this.redHeroes.size();i++){
-            Hero red = this.redHeroes.get(i);
+        for (Hero red : this.redHeroes) {
             red.setBattlefield(this);
             red.setTeam(Hero.Team.RED);
-            red.setFullname(red.getTeam()+" "+red.getName());
+            red.setFullname(red.getTeam() + " " + red.getName());
             red.init();
         }
     }
@@ -118,8 +140,8 @@ public class Battlefield {
             return GameState.REDWINTIMEOUT;
         }
         boolean check = true;
-        for(int i=0; i<this.activeredHeroes.size();i++){
-            if(this.activeredHeroes.get(i).isAlive()){
+        for (Hero activeredHero : this.activeredHeroes) {
+            if (activeredHero.isAlive()) {
                 check = false;
                 break;
             }
@@ -128,8 +150,8 @@ public class Battlefield {
             return GameState.BLUEWIN;
         }
         check = true;
-        for(int i=0; i<this.activeblueHeroes.size();i++){
-            if(this.activeblueHeroes.get(i).isAlive()){
+        for (Hero activeblueHero : this.activeblueHeroes) {
+            if (activeblueHero.isAlive()) {
                 check = false;
                 break;
             }
@@ -158,8 +180,8 @@ public class Battlefield {
 
     private Hero.Fraction getWardenBonus(ArrayList<Hero> heroes) {
         ArrayList<Hero.Fraction> fractions = new ArrayList<>();
-        for (int i = 0; i < heroes.size(); i++) {
-            fractions.add(heroes.get(i).getFraction());
+        for (Hero hero : heroes) {
+            fractions.add(hero.getFraction());
         }
         return getHighestOccurences(fractions);
     }
@@ -169,7 +191,7 @@ public class Battlefield {
         int equalmax = 0;
         int curr = 0;
         Hero.Fraction currKey = null;
-        Set<Hero.Fraction> unique = new HashSet<Hero.Fraction>(list);
+        Set<Hero.Fraction> unique = new HashSet<>(list);
 
         for (Hero.Fraction key : unique) {
             curr = Collections.frequency(list, key);

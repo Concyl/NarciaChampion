@@ -1,23 +1,36 @@
 package backend.app.Buffs;
 
-import backend.app.DamageEffect;
 import backend.app.Hero;
 import lombok.Getter;
+import org.json.simple.JSONObject;
 
 public class SpecialBuff extends Buff{
-    public enum SpecialIgnores{
-        DAMAGECAP, DAMAGETOLP, CANTMISS, DAMAGEREDUCTION, NOREFLECTEDDAMAGE, IGNOREREFLECT, STEALTH, CONFUSION
-    }
 
     @Getter private SpecialIgnores type;
-    public SpecialBuff(Hero origin, Hero target, String preciseOrigin, boolean isBuff, boolean isRemovable, int timer, String name, SpecialIgnores type) {
+    @Getter private int value;
+    @Getter private boolean ignore;
+    public SpecialBuff(Hero origin, Hero target, String preciseOrigin, boolean isBuff, boolean isRemovable, int timer, String name, SpecialIgnores type,int value, boolean ignore) {
         super(origin, target, preciseOrigin, isBuff, isRemovable, timer, name);
         this.type = type;
+        this.value = value;
+        this.ignore = ignore;
+    }
+
+    public SpecialBuff(JSONObject json){
+        super(json);
+        this.type = SpecialIgnores.valueOf((String)json.get("type"));
+        this.value = (int)(long)json.get("value");
+        this.ignore = (boolean)json.get("ignore");
     }
 
     @Override
     public void apply(){
-        this.target.addSpecialBuff(this);
+        if(this.isIgnore()){
+            this.target.addPassiveIgnore(this);
+        }
+        else{
+            this.type.addSpecialIgnore(this);
+        }
     }
 
     @Override

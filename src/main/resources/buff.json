@@ -30,7 +30,9 @@
     "preciseOrigin": "Baseline SpecialBuff",
     "isRemovable": false,
     "timer": 1800,
-    "name": "Ignore DamageCaps",
-    "type": "DAMAGECAP"
+    "name": "Add DamageCap",
+    "type": "DAMAGECAP",
+    "value": 100,
+    "ignore": false
   }
 ]
