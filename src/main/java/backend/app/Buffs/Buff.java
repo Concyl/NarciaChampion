@@ -7,7 +7,6 @@ import org.json.simple.JSONObject;
 
 public class Buff {
     @Getter @Setter protected String preciseOrigin;
-    @Getter @Setter protected boolean isBuff;
     @Getter @Setter protected boolean isRemovable;
     @Getter @Setter protected int timer;
     @Getter @Setter protected int id;
@@ -15,9 +14,8 @@ public class Buff {
     @Getter @Setter protected Hero target;
     @Getter @Setter protected Hero origin;
 
-    public Buff(Hero origin, Hero target, String preciseOrigin, boolean isBuff, boolean isRemovable, int timer, String name) {
+    public Buff(Hero origin, Hero target, String preciseOrigin,boolean isRemovable, int timer, String name) {
         this.preciseOrigin = preciseOrigin;
-        this.isBuff = isBuff;
         this.isRemovable = isRemovable;
         this.timer = timer;
         this.name = name;
@@ -25,9 +23,8 @@ public class Buff {
         this.target = target;
     }
 
-    public Buff(String preciseOrigin, boolean isBuff, boolean isRemovable, int timer, String name, int id) {
+    public Buff(String preciseOrigin,boolean isRemovable, int timer, String name, int id) {
         this.preciseOrigin = preciseOrigin;
-        this.isBuff = isBuff;
         this.isRemovable = isRemovable;
         this.timer = timer;
         this.name = name;
@@ -49,7 +46,6 @@ public class Buff {
 
     public Buff(JSONObject json){
        this((String)json.get("preciseOrigin"),
-               (boolean) json.get("isBuff"),
                (boolean) json.get("isRemovable"),
                (int)(long) json.get("timer"),
                (String)json.get("name"),

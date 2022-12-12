@@ -26,12 +26,12 @@
   {
     "typename": "backend.app.Buffs.SpecialBuff",
     "id": 2,
-    "isBuff": true,
     "preciseOrigin": "Baseline SpecialBuff",
     "isRemovable": false,
     "timer": 1800,
-    "name": "Ignore DamageCaps",
+    "name": "Add DamageCap",
     "type": "DAMAGECAP",
-    "value": 100
+    "value": 100,
+    "ignore": false
   }
 ]

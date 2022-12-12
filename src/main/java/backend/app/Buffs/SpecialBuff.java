@@ -9,8 +9,8 @@ public class SpecialBuff extends Buff{
     @Getter private SpecialIgnores type;
     @Getter private int value;
     @Getter private boolean ignore;
-    public SpecialBuff(Hero origin, Hero target, String preciseOrigin, boolean isBuff, boolean isRemovable, int timer, String name, SpecialIgnores type,int value, boolean ignore) {
-        super(origin, target, preciseOrigin, isBuff, isRemovable, timer, name);
+    public SpecialBuff(Hero origin, Hero target, String preciseOrigin, boolean isRemovable, int timer, String name, SpecialIgnores type,int value, boolean ignore) {
+        super(origin, target,preciseOrigin,isRemovable,timer,name);
         this.type = type;
         this.value = value;
         this.ignore = ignore;

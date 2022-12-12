@@ -73,12 +73,8 @@ public abstract class Hero {
 
     @Getter private final ArrayList<SpecialIgnores> passiveIgnores = new ArrayList<>();
 
-    @Getter private final ArrayList<Buff> allbuffs = new ArrayList<>();
+    @Getter private final ArrayList<Buff> buffs = new ArrayList<>();
     @Getter private final ArrayList<Talent> talents = new ArrayList<>();
-    @Getter private final ArrayList<Statbuff> buffs = new ArrayList<>();
-    @Getter private final ArrayList<Statbuff> debuffs = new ArrayList<>();
-    @Getter private final ArrayList<Statbuff> immunities = new ArrayList<>();
-    @Getter private final ArrayList<Statbuff> negativestatus = new ArrayList<>();
     @Getter private final ArrayList<SpecialAbility> specialAbilities = new ArrayList<>();
     @Getter private final ArrayList<TimeBasedSpecialAbility> timespecialAbilities = new ArrayList<>();
 
@@ -141,12 +137,16 @@ public abstract class Hero {
                 this.damageCap = newDamageCap;
             }
         }
-        this.allbuffs.add(buff);
+        this.addBuff(buff);
+    }
+
+    public void addBuff(Buff buff){
+        this.buffs.add(buff);
     }
 
     public void addPassiveIgnore(SpecialBuff buff){
         this.passiveIgnores.add(buff.getType());
-        this.allbuffs.add(buff);
+        this.addBuff(buff);
     }
 
     public void removeSpecialBuff(SpecialBuff buff){
@@ -270,11 +270,8 @@ public abstract class Hero {
         if(this.autoattackcooldown > 0){
             this.autoattackcooldown--;
         }
-        for(int i = 0; i<this.buffs.size();i++){
-            this.buffs.get(i).update();
-        }
-        for(int i = 0; i<this.debuffs.size();i++){
-            this.debuffs.get(i).update();
+        for (Buff buff : this.buffs) {
+            buff.update();
         }
         for(int i = 0;i<this.getSpecialAbilities().size();i++){
             this.getSpecialAbilities().get(i).update();
@@ -393,42 +390,12 @@ public abstract class Hero {
         return HeroesinRange(radius,xpos,ypos,this.getEnemyTeam());
     }
 
-    public void calculateNegativeEffects(){
-        this.resetNegativeEffets();
-        for(int i = 0;this.getNegativestatus().size()<i;i++){
-           Statbuff.Bufftype buff = this.getNegativestatus().get(i).getType();
-           switch(buff){
-               case FEAR:
-               case STUN:
-               case FROST:
-               case ENTANGLE:
-               case PETRIFY:
-                   this.applyStuns();
-                   break;
-               case SILENCE:
-               case INHIBIT:
-                   this.applySilence();
-                   this.canReceiveEnergy = false;
-                   break;
-               case DISARM:
-                   this.canAutoAttack = false;
-               case BLIND:
-                   this.isBlind = true;
-               case PARALYZE:
-                   this.applyStuns();
-                   this.canReceiveEnergy = false;
-                   // TODO
-                   // KEINE HEILUNG
-           }
-       }
-    }
-
     //TODO
     public boolean getPassiveIgnore(SpecialIgnores ignore){
         return this.getPassiveIgnores().contains(ignore);
     }
 
-    private void resetNegativeEffets(){
+    public void resetNegativeEffets(){
         this.canMove = true;
         this.canAutoAttack = true;
         this.canActivateSkill = true;
@@ -436,15 +403,27 @@ public abstract class Hero {
         this.canReceiveEnergy = true;
     }
 
-    private void applySilence(){
+    public void applySilence(){
         this.canActivateSkill = false;
         this.silenced = true;
     }
 
-    private void applyStuns(){
+    public void applyStuns(){
         this.canMove = false;
         this.canAutoAttack = false;
         this.canActivateSkill = false;
+    }
+
+    public void cantReceiveEnergy(){
+        this.canReceiveEnergy = false;
+    }
+
+    public void cantAutoAttack(){
+        this.canAutoAttack = false;
+    }
+
+    public void isBlinded(){
+        this.isBlind = true;
     }
 
     public void heal(double amount,String text){

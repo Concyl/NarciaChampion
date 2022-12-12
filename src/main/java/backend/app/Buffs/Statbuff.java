@@ -7,7 +7,28 @@ import java.util.ArrayList;
 
 public class Statbuff extends Buff {
     public enum Bufftype{
-        ATTACK,HP,DEF,CRIT,CRITDAMAGE,CRITDEF,ACCURACY,EVASION,MOVEMENTSPEED,HEALING,ATTACKSPEED,ENERGY,STUN,FEAR,FROST,SILENCE,DISARM,PETRIFY,ENTANGLE,BLIND,INHIBIT,PARALYZE
+        ATTACK,
+        HP,
+        DEF,
+        CRIT,
+        CRITDAMAGE,
+        CRITDEF,
+        ACCURACY,
+        EVASION,
+        MOVEMENTSPEED,
+        HEALING,
+        ATTACKSPEED,
+        ENERGY,
+        STUN,
+        FEAR,
+        FROST,
+        SILENCE,
+        DISARM,
+        PETRIFY,
+        ENTANGLE,
+        BLIND,
+        INHIBIT,
+        PARALYZE
     }
 
     public Bufftype getType() {
@@ -17,9 +38,11 @@ public class Statbuff extends Buff {
     private Bufftype type;
     private double amount;
     private boolean isImmunity;
+    private boolean isBuff;
     public Statbuff(Hero origin, Hero target, String preciseOrigin, boolean isBuff, boolean isRemovable, boolean isImmunity, int timer, String name,
                     Bufftype type,double amount) {
-        super(origin,target,preciseOrigin, isBuff, isRemovable, timer, name);
+        super(origin,target,preciseOrigin,isRemovable,timer,name);
+        this.isBuff = isBuff;
         this.type = type;
         this.amount = amount;
         this.isImmunity = isImmunity;
@@ -27,6 +50,7 @@ public class Statbuff extends Buff {
 
     public Statbuff(JSONObject json){
         super(json);
+        this.isBuff= (boolean) json.get("isBuff");
         this.type = Bufftype.valueOf((String)json.get("type"));
         this.amount = (int)(long) json.get("amount");
         this.isImmunity = (boolean) json.get("isImmunity");
@@ -52,45 +76,43 @@ public class Statbuff extends Buff {
     }
 
     private void applyImmunityBuff(){
-        this.target.getImmunities().add(this);
-        if(!this.target.getNegativestatus().stream().anyMatch( stat -> stat.type == this.type)){
-            return;
-        }
-        for(int i = 0;i<this.target.getNegativestatus().size();i++){
-            if(this.target.getNegativestatus().get(i).type == this.type){
-                this.target.getNegativestatus().remove(i);
-            }
-        }
-        this.target.calculateNegativeEffects();
-        String s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" Immunity from "+this.origin.getFullname();
+        this.target.getBuffs().removeIf(x -> x instanceof Statbuff && !((Statbuff) x).isImmunity && ((Statbuff) x).type == this.type);
+        this.target.addBuff(this);
+        calculateNegativeEffects();
+        String s = this.target.getFullname()+" receives "+this.type.toString()+" Immunity from "+this.origin.getFullname();
         this.origin.getBattlefield().getCombatText().addCombatText(s);
     }
 
     private void applyImmunityDeBuff(){
-        if(this.target.getImmunities().stream().anyMatch( stat -> stat.type == this.type)){
+        if(canApplyDebuff()){
+            String s = this.target.getFullname()+" blocks "+this.type.toString()+" from "+this.origin.getFullname();
+            this.origin.getBattlefield().getCombatText().addCombatText(s);
             return;
         }
-        this.target.getNegativestatus().add(this);
-        this.target.calculateNegativeEffects();
-        String s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" Negative Status from "+this.origin.getFullname();
+        this.target.addBuff(this);
+        calculateNegativeEffects();
+        String s = this.target.getFullname()+" receives "+this.type.toString()+" from "+this.origin.getFullname();
         this.origin.getBattlefield().getCombatText().addCombatText(s);
     }
 
     private void buff(){
+        String s;
         if(this.isBuff){
-            String s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" Buff from "+this.origin.getFullname();
-            this.origin.getBattlefield().getCombatText().addCombatText(s);
-            this.target.getBuffs().add(this);
+            s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" Buff from "+this.origin.getFullname();
         }
         else{
-            if(this.target.getImmunities().stream().anyMatch( stat -> stat.type == this.type)){
+            if(canApplyDebuff()){
                 return;
             }
-            String s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" DeBuff from "+this.origin.getFullname();
-            this.origin.getBattlefield().getCombatText().addCombatText(s);
-            this.target.getDebuffs().add(this);
+            s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" DeBuff from "+this.origin.getFullname();
         }
+        this.origin.getBattlefield().getCombatText().addCombatText(s);
+        this.target.addBuff(this);
         applyBuff();
+    }
+
+    private boolean canApplyDebuff(){
+        return this.target.getBuffs().stream().anyMatch(x -> x instanceof Statbuff && ((Statbuff) x).isImmunity && ((Statbuff) x).type == this.type);
     }
 
     @Override
@@ -99,27 +121,28 @@ public class Statbuff extends Buff {
         if(this.timer == 0){
             if(this.isImmunity){
                 if(this.isBuff){
-                    this.target.getImmunities().remove(this);
-                    String s =this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " Immunity from " + this.origin.getFullname();
+                    this.target.getBuffs().remove(this);
+                    String s =this.target.getFullname() + " loses "+ this.type.toString() + " Immunity from " + this.origin.getFullname();
                     this.origin.getBattlefield().getCombatText().addCombatText(s);
                 }
                 else{
-                    this.target.getNegativestatus().remove(this);
-                    this.target.calculateNegativeEffects();
-                    String s=this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " Negative Status from " + this.origin.getFullname();
+                    this.target.getBuffs().remove(this);
+                    calculateNegativeEffects();
+                    String s=this.target.getFullname() + " loses "+ this.type.toString() + " from " + this.origin.getFullname();
                     this.origin.getBattlefield().getCombatText().addCombatText(s);
                 }
             }
             else {
                 this.target.getBuffs().remove(this);
                 this.applyBuff();
+                String s;
                 if (this.isBuff) {
-                    String s =this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " Buff from " + this.origin.getFullname();
-                    this.origin.getBattlefield().getCombatText().addCombatText(s);
-                } else {
-                    String s =this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " DeBuff from " + this.origin.getFullname();
-                    this.origin.getBattlefield().getCombatText().addCombatText(s);
+                    s = this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " Buff from " + this.origin.getFullname();
                 }
+                else {
+                    s = this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " DeBuff from " + this.origin.getFullname();
+                }
+                this.origin.getBattlefield().getCombatText().addCombatText(s);
             }
         }
     }
@@ -127,40 +150,40 @@ public class Statbuff extends Buff {
     public void applyBuff() {
         switch(this.type){
             case HP:
-                this.target.setMaxHp(this.applyHp(Bufftype.HP,this.target.getCoreStats().getHp()));
+                this.target.setMaxHp(this.applyHp(this.target.getCoreStats().getHp()));
                 break;
             case DEF:
-                this.target.setDef(this.applyreverse(Bufftype.DEF,1));
+                this.target.setDef(this.applyreverse(1));
                 break;
             case ATTACK:
-                this.target.setAttack((int) this.applymult(Bufftype.ATTACK,this.target.getCoreStats().getAttack()));
+                this.target.setAttack((int) this.applymult(this.target.getCoreStats().getAttack()));
                 break;
             case CRIT:
-                this.target.setCritchance((int) this.applyadd(Bufftype.CRIT,this.target.getCoreStats().getCrit()));
+                this.target.setCritchance((int) this.applyadd(this.target.getCoreStats().getCrit()));
                 break;
             case CRITDEF:
-                this.target.setCritdef((int) this.applyadd(Bufftype.CRITDEF,this.target.getCoreStats().getCritdef()));
+                this.target.setCritdef((int) this.applyadd(this.target.getCoreStats().getCritdef()));
                 break;
             case CRITDAMAGE:
-                this.target.setCritdamage((int) this.applyadd(Bufftype.CRITDAMAGE,this.target.getCoreStats().getCridamage()));
+                this.target.setCritdamage((int) this.applyadd(this.target.getCoreStats().getCridamage()));
                 break;
             case EVASION:
-                this.target.setEvasion((int) this.applyadd(Bufftype.EVASION,this.target.getCoreStats().getEvasion()));
+                this.target.setEvasion((int) this.applyadd(this.target.getCoreStats().getEvasion()));
                 break;
             case ACCURACY:
-                this.target.setAccuracy((int) this.applyadd(Bufftype.ACCURACY,this.target.getCoreStats().getAccuracy()));
+                this.target.setAccuracy((int) this.applyadd(this.target.getCoreStats().getAccuracy()));
                 break;
             case ENERGY:
-                this.target.setEnergyrecoveryrate((int) this.applymult(Bufftype.ENERGY,this.target.getCoreStats().getEnergyrecoveryrate()));
+                this.target.setEnergyrecoveryrate((int) this.applymult(this.target.getCoreStats().getEnergyrecoveryrate()));
                 break;
             case HEALING:
-                this.target.setHealing(this.applymult(Bufftype.HEALING,1));
+                this.target.setHealing(this.applymult(1));
                 break;
             case MOVEMENTSPEED:
-                this.target.setMovementspeed((int) this.applymult(Bufftype.MOVEMENTSPEED,this.target.getCoreStats().getMovementspeed()));
+                this.target.setMovementspeed((int) this.applymult(this.target.getCoreStats().getMovementspeed()));
                 break;
             case ATTACKSPEED:
-                this.target.setAttackspeed(this.applyAttackspeed(Bufftype.ATTACKSPEED,this.target.getCoreStats().getAttackspeed()));
+                this.target.setAttackspeed(this.applyAttackspeed(this.target.getCoreStats().getAttackspeed()));
                 this.target.calculateRealAttackspeed();
                 break;
             default:
@@ -168,97 +191,119 @@ public class Statbuff extends Buff {
         }
     }
 
-    private double applyHp(Bufftype bufftype,double basestat){
+    private void calculateNegativeEffects(){
+        this.target.resetNegativeEffets();
+        for(Buff buff : this.target.getBuffs()){
+            if(buff instanceof Statbuff && ((Statbuff) buff).isImmunity && !((Statbuff) buff).isBuff)
+            switch(((Statbuff) buff).type){
+                case FEAR:
+                case STUN:
+                case FROST:
+                case ENTANGLE:
+                case PETRIFY:
+                    this.target.applyStuns();
+                    break;
+                case SILENCE:
+                case INHIBIT:
+                    this.target.applySilence();
+                    this.target.cantReceiveEnergy();
+                    break;
+                case DISARM:
+                    this.target.cantAutoAttack();
+                case BLIND:
+                    this.target.isBlinded();
+                case PARALYZE:
+                    this.target.applyStuns();
+                    this.target.cantReceiveEnergy();
+                    // TODO
+                    // KEINE HEILUNG
+            }
+        }
+    }
+
+    private double applyHp(double basestat){
         double stat = basestat;
         double mult=1;
-        ArrayList<Statbuff> buffs =this.target.getBuffs();
-        for(int i = 0;i<buffs.size();i++){
-            Statbuff buff = buffs.get(i);
-            if(buff.type == type){
-                mult = mult+(buff.amount/100);
+        ArrayList<Statbuff> buffs = getAllStatBuffs();
+        for (Statbuff buff : buffs) {
+            if (buff.type == type) {
+                if(isBuff){
+                    mult = mult + (buff.amount / 100);
+                }
+                else{
+                    mult = mult-(buff.amount/100);
+                }
             }
         }
-        ArrayList<Statbuff> debuffs =this.target.getDebuffs();
-        for(int i = 0;i<debuffs.size();i++){
-            Statbuff buff = debuffs.get(i);
-            if(buff.type == type){
-                mult = mult-(buff.amount/100);
-            }
-        }
-        return stat*mult;
+        double newHP = stat*mult;
+        return newHP;
     }
 
-    private double applyreverse(Bufftype bufftype,double basestat){
+    private double applyreverse(double basestat){
         double stat = basestat;
-        ArrayList<Statbuff> buffs =this.target.getBuffs();
-        for(int i = 0;i<buffs.size();i++){
-            Statbuff buff = buffs.get(i);
-            if(buff.type == type){
-                stat = stat*((100-buff.amount)/100);
-            }
-        }
-        ArrayList<Statbuff> debuffs =this.target.getDebuffs();
-        for(int i = 0;i<debuffs.size();i++){
-            Statbuff buff = debuffs.get(i);
-            if(buff.type == type){
-                stat=stat*((buff.amount/100)+1);
+        ArrayList<Statbuff> buffs = getAllStatBuffs();
+        for (Statbuff buff : buffs) {
+            if (buff.type == type) {
+                if (isBuff) {
+                    stat = stat * ((100 - buff.amount) / 100);
+                } else {
+                    stat = stat * ((buff.amount / 100) + 1);
+                }
             }
         }
         return stat;
     }
 
-    private double applymult(Bufftype bufftype,double basestat){
-        double stat = basestat;
-        ArrayList<Statbuff> buffs =this.target.getBuffs();
-        for(int i = 0;i<buffs.size();i++){
-            Statbuff buff = buffs.get(i);
-            if(buff.type == bufftype){
-                stat = stat*((buff.amount/100)+1);
+    private ArrayList<Statbuff> getAllStatBuffs(){
+        ArrayList<Statbuff> buffs = new ArrayList<>();
+        for(Buff buff: this.target.getBuffs()){
+            if(buff instanceof Statbuff){
+                buffs.add((Statbuff) buff);
             }
         }
-        ArrayList<Statbuff> debuffs =this.target.getDebuffs();
-        for(int i = 0;i<debuffs.size();i++){
-            Statbuff buff = debuffs.get(i);
-            if(buff.type == bufftype){
-                stat = stat*((100-buff.amount)/100);
+        return buffs;
+    }
+
+    private double applymult(double basestat){
+        double stat = basestat;
+        ArrayList<Statbuff> buffs = getAllStatBuffs();
+        for (Statbuff buff : buffs) {
+            if (buff.type == type) {
+                if (isBuff) {
+                    stat = stat * ((buff.amount / 100) + 1);
+                } else {
+                    stat = stat * ((100 - buff.amount) / 100);
+                }
             }
         }
         return stat;
     }
 
-    private double applyadd(Bufftype bufftype,double basestat){
+    private double applyadd(double basestat){
         double stat = basestat;
-        ArrayList<Statbuff> buffs =this.target.getBuffs();
-        for(int i = 0;i<buffs.size();i++){
-            Statbuff buff = buffs.get(i);
-            if(buff.type == bufftype){
-                stat = stat+buff.amount;
-            }
-        }
-        ArrayList<Statbuff> debuffs =this.target.getDebuffs();
-        for(int i = 0;i<debuffs.size();i++){
-            Statbuff buff = debuffs.get(i);
-            if(buff.type == bufftype){
-                stat = stat-buff.amount;
+        ArrayList<Statbuff> buffs = getAllStatBuffs();
+        for (Statbuff buff : buffs) {
+            if (buff.type == type) {
+                if (isBuff) {
+                    stat = stat + buff.amount;
+                } else {
+                    stat = stat - buff.amount;
+                }
             }
         }
         return stat;
     }
 
-    private double applyAttackspeed(Bufftype bufftype,double basestat){
+    private double applyAttackspeed(double basestat){
         double stat = basestat;
-        ArrayList<Statbuff> buffs =this.target.getBuffs();
-        for(int i = 0;i<buffs.size();i++){
-            Statbuff buff = buffs.get(i);
-            if(buff.type == bufftype){
-                stat = stat/((buff.amount/100)+1);
-            }
-        }
-        ArrayList<Statbuff> debuffs =this.target.getDebuffs();
-        for(int i = 0;i<debuffs.size();i++){
-            Statbuff buff = debuffs.get(i);
-            if(buff.type == bufftype){
-                stat = stat/((100-buff.amount)/100);
+        ArrayList<Statbuff> buffs = getAllStatBuffs();
+        for (Statbuff buff : buffs) {
+            if (buff.type == type) {
+                if (isBuff) {
+                    stat = stat / ((buff.amount / 100) + 1);
+                } else {
+                    stat = stat / ((100 - buff.amount) / 100);
+                }
             }
         }
         return stat;

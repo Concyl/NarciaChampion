@@ -26,7 +26,6 @@
   {
     "typename": "backend.app.Buffs.SpecialBuff",
     "id": 2,
-    "isBuff": true,
     "preciseOrigin": "Baseline SpecialBuff",
     "isRemovable": false,
     "timer": 1800,
