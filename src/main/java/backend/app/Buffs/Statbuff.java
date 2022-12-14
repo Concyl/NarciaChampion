@@ -1,44 +1,17 @@
 package backend.app.Buffs;
 
 import backend.app.Hero;
+import lombok.Getter;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
 public class Statbuff extends Buff {
-    public enum Bufftype{
-        ATTACK,
-        HP,
-        DEF,
-        CRIT,
-        CRITDAMAGE,
-        CRITDEF,
-        ACCURACY,
-        EVASION,
-        MOVEMENTSPEED,
-        HEALING,
-        ATTACKSPEED,
-        ENERGY,
-        STUN,
-        FEAR,
-        FROST,
-        SILENCE,
-        DISARM,
-        PETRIFY,
-        ENTANGLE,
-        BLIND,
-        INHIBIT,
-        PARALYZE
-    }
 
-    public Bufftype getType() {
-        return type;
-    }
-
-    private Bufftype type;
-    private double amount;
+    @Getter private Bufftype type;
+    @Getter private double amount;
     private boolean isImmunity;
-    private boolean isBuff;
+    @Getter private boolean isBuff;
     public Statbuff(Hero origin, Hero target, String preciseOrigin, boolean isBuff, boolean isRemovable, boolean isImmunity, int timer, String name,
                     Bufftype type,double amount) {
         super(origin,target,preciseOrigin,isRemovable,timer,name);
@@ -108,7 +81,7 @@ public class Statbuff extends Buff {
         }
         this.origin.getBattlefield().getCombatText().addCombatText(s);
         this.target.addBuff(this);
-        applyBuff();
+        this.type.recalculateStat(this.target);
     }
 
     private boolean canApplyDebuff(){
@@ -133,8 +106,6 @@ public class Statbuff extends Buff {
                 }
             }
             else {
-                this.target.getBuffs().remove(this);
-                this.applyBuff();
                 String s;
                 if (this.isBuff) {
                     s = this.target.getFullname() + " loses " + this.amount + "% " + this.type.toString() + " Buff from " + this.origin.getFullname();
@@ -144,50 +115,6 @@ public class Statbuff extends Buff {
                 }
                 this.origin.getBattlefield().getCombatText().addCombatText(s);
             }
-        }
-    }
-
-    public void applyBuff() {
-        switch(this.type){
-            case HP:
-                this.target.setMaxHp(this.applyHp(this.target.getCoreStats().getHp()));
-                break;
-            case DEF:
-                this.target.setDef(this.applyreverse(1));
-                break;
-            case ATTACK:
-                this.target.setAttack((int) this.applymult(this.target.getCoreStats().getAttack()));
-                break;
-            case CRIT:
-                this.target.setCritchance((int) this.applyadd(this.target.getCoreStats().getCrit()));
-                break;
-            case CRITDEF:
-                this.target.setCritdef((int) this.applyadd(this.target.getCoreStats().getCritdef()));
-                break;
-            case CRITDAMAGE:
-                this.target.setCritdamage((int) this.applyadd(this.target.getCoreStats().getCridamage()));
-                break;
-            case EVASION:
-                this.target.setEvasion((int) this.applyadd(this.target.getCoreStats().getEvasion()));
-                break;
-            case ACCURACY:
-                this.target.setAccuracy((int) this.applyadd(this.target.getCoreStats().getAccuracy()));
-                break;
-            case ENERGY:
-                this.target.setEnergyrecoveryrate((int) this.applymult(this.target.getCoreStats().getEnergyrecoveryrate()));
-                break;
-            case HEALING:
-                this.target.setHealing(this.applymult(1));
-                break;
-            case MOVEMENTSPEED:
-                this.target.setMovementspeed((int) this.applymult(this.target.getCoreStats().getMovementspeed()));
-                break;
-            case ATTACKSPEED:
-                this.target.setAttackspeed(this.applyAttackspeed(this.target.getCoreStats().getAttackspeed()));
-                this.target.calculateRealAttackspeed();
-                break;
-            default:
-                return;
         }
     }
 
@@ -219,93 +146,5 @@ public class Statbuff extends Buff {
                     // KEINE HEILUNG
             }
         }
-    }
-
-    private double applyHp(double basestat){
-        double stat = basestat;
-        double mult=1;
-        ArrayList<Statbuff> buffs = getAllStatBuffs();
-        for (Statbuff buff : buffs) {
-            if (buff.type == type) {
-                if(isBuff){
-                    mult = mult + (buff.amount / 100);
-                }
-                else{
-                    mult = mult-(buff.amount/100);
-                }
-            }
-        }
-        double newHP = stat*mult;
-        return newHP;
-    }
-
-    private double applyreverse(double basestat){
-        double stat = basestat;
-        ArrayList<Statbuff> buffs = getAllStatBuffs();
-        for (Statbuff buff : buffs) {
-            if (buff.type == type) {
-                if (isBuff) {
-                    stat = stat * ((100 - buff.amount) / 100);
-                } else {
-                    stat = stat * ((buff.amount / 100) + 1);
-                }
-            }
-        }
-        return stat;
-    }
-
-    private ArrayList<Statbuff> getAllStatBuffs(){
-        ArrayList<Statbuff> buffs = new ArrayList<>();
-        for(Buff buff: this.target.getBuffs()){
-            if(buff instanceof Statbuff){
-                buffs.add((Statbuff) buff);
-            }
-        }
-        return buffs;
-    }
-
-    private double applymult(double basestat){
-        double stat = basestat;
-        ArrayList<Statbuff> buffs = getAllStatBuffs();
-        for (Statbuff buff : buffs) {
-            if (buff.type == type) {
-                if (isBuff) {
-                    stat = stat * ((buff.amount / 100) + 1);
-                } else {
-                    stat = stat * ((100 - buff.amount) / 100);
-                }
-            }
-        }
-        return stat;
-    }
-
-    private double applyadd(double basestat){
-        double stat = basestat;
-        ArrayList<Statbuff> buffs = getAllStatBuffs();
-        for (Statbuff buff : buffs) {
-            if (buff.type == type) {
-                if (isBuff) {
-                    stat = stat + buff.amount;
-                } else {
-                    stat = stat - buff.amount;
-                }
-            }
-        }
-        return stat;
-    }
-
-    private double applyAttackspeed(double basestat){
-        double stat = basestat;
-        ArrayList<Statbuff> buffs = getAllStatBuffs();
-        for (Statbuff buff : buffs) {
-            if (buff.type == type) {
-                if (isBuff) {
-                    stat = stat / ((buff.amount / 100) + 1);
-                } else {
-                    stat = stat / ((100 - buff.amount) / 100);
-                }
-            }
-        }
-        return stat;
     }
 }

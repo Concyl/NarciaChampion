@@ -1,6 +1,6 @@
 package backend.app.Heroes;
 
-import backend.app.Buffs.SpecialIgnores;
+import backend.app.Buffs.Bufftype;
 import backend.app.Buffs.Statbuff;
 import backend.app.Hero;
 import backend.app.Skill;
@@ -15,10 +15,12 @@ public class TestHero extends Hero{
         this.skill = new Skill(30,0,"TestHero Skill");
         //this.getPassiveIgnores().add(SpecialIgnores.DAMAGECAP);
         this.setReflectother(10);
-        Statbuff def = new Statbuff(this,this,"BaseLineAbility",true,false,false,1500,"Def", Statbuff.Bufftype.DEF,95);
+        Statbuff def = new Statbuff(this,this,"BaseLineAbility",true,false,false,1500,"Def", Bufftype.DEF,95);
         def.apply();
-        Statbuff immun = new Statbuff(this,this,"BaseLineAbility",true,false,true,90,"Para Immun", Statbuff.Bufftype.PARALYZE,95);
+        Statbuff immun = new Statbuff(this,this,"BaseLineAbility",true,false,false,25,"Att 1", Bufftype.ATTACK,95);
         immun.apply();
+        Statbuff at = new Statbuff(this,this,"BaseLineAbility",true,false,false,25,"Att 2", Bufftype.ATTACK,40);
+        at.apply();
     }
     @Override
     public void useSkill(){

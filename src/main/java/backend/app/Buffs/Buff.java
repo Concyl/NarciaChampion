@@ -57,4 +57,11 @@ public class Buff {
             this.timer--;
         }
     }
+
+    public boolean isExpired() {
+        if(this.timer== 0){
+            return true;
+        }
+        return false;
+    }
 }

@@ -2,6 +2,8 @@ package backend.app;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 
 import backend.app.Buffs.*;
 import lombok.Getter;
@@ -73,7 +75,9 @@ public abstract class Hero {
 
     @Getter private final ArrayList<SpecialIgnores> passiveIgnores = new ArrayList<>();
 
-    @Getter private final ArrayList<Buff> buffs = new ArrayList<>();
+    @Getter private final ArrayList<Statbuff> buffs = new ArrayList<>();
+    @Getter private final ArrayList<Immunity> immunities = new ArrayList<>();
+    @Getter private final ArrayList<Impairment> impairments = new ArrayList<>();
     @Getter private final ArrayList<Talent> talents = new ArrayList<>();
     @Getter private final ArrayList<SpecialAbility> specialAbilities = new ArrayList<>();
     @Getter private final ArrayList<TimeBasedSpecialAbility> timespecialAbilities = new ArrayList<>();
@@ -141,7 +145,41 @@ public abstract class Hero {
     }
 
     public void addBuff(Buff buff){
-        this.buffs.add(buff);
+        if(buff instanceof Statbuff){
+            this.buffs.add((Statbuff) buff);
+        }
+        else if(buff instanceof Immunity){
+            this.immunities.add((Immunity) buff);
+        }
+    }
+
+    public void calculateNegativeEffects(){
+        this.resetNegativeEffets();
+        for(Impairment imp : this.getImpairments()){
+            switch(imp.getType()){
+                case FEAR:
+                case STUN:
+                case FROST:
+                case ENTANGLE:
+                case PETRIFY:
+                    this.target.applyStuns();
+                    break;
+                case SILENCE:
+                case INHIBIT:
+                    this.target.applySilence();
+                    this.target.cantReceiveEnergy();
+                    break;
+                case DISARM:
+                    this.target.cantAutoAttack();
+                case BLIND:
+                    this.target.isBlinded();
+                case PARALYZE:
+                    this.target.applyStuns();
+                    this.target.cantReceiveEnergy();
+                    // TODO
+                    // KEINE HEILUNG
+            }
+        }
     }
 
     public void addPassiveIgnore(SpecialBuff buff){
@@ -270,13 +308,29 @@ public abstract class Hero {
         if(this.autoattackcooldown > 0){
             this.autoattackcooldown--;
         }
-        for (Buff buff : this.buffs) {
-            buff.update();
-        }
+        reduceBuffCooldowns();
         for(int i = 0;i<this.getSpecialAbilities().size();i++){
             this.getSpecialAbilities().get(i).update();
         }
         this.skill.update();
+    }
+
+    private void reduceBuffCooldowns(){
+        ArrayList<Bufftype> removedTypes = new ArrayList<>();
+        for (Statbuff buff : this.getBuffs()) {
+            buff.update();
+            if(buff.isExpired()){
+                removedTypes.add(buff.getType());
+            }
+        }
+        if(removedTypes.size() == 0){
+            return;
+        }
+        this.getBuffs().removeIf(x -> x.isExpired());
+        removedTypes = new ArrayList<>(new LinkedHashSet<>(removedTypes));
+        for( Bufftype type : removedTypes){
+            type.recalculateStat(this);
+        }
     }
 
     public void autoattack(){
@@ -483,5 +537,84 @@ public abstract class Hero {
             filtered.add(aliveHeroes.get(i));
         }
         return filtered;
+    }
+
+
+    public double applyHp(double basestat,Bufftype type){
+        double stat = basestat;
+        double mult=1;
+        ArrayList<Statbuff> buffs = getBuffs();
+        for (Statbuff buff : buffs) {
+            if (buff.getType() == type) {
+                if(buff.isBuff()){
+                    mult = mult + (buff.getAmount() / 100);
+                }
+                else{
+                    mult = mult-(buff.getAmount()/100);
+                }
+            }
+        }
+        double newHP = stat*mult;
+        return newHP;
+    }
+
+    public double applyreverse(double basestat,Bufftype type){
+        double stat = basestat;
+        ArrayList<Statbuff> buffs = getBuffs();
+        for (Statbuff buff : buffs) {
+            if (buff.getType() == type) {
+                if (buff.isBuff()) {
+                    stat = stat * ((100 - buff.getAmount()) / 100);
+                } else {
+                    stat = stat * ((buff.getAmount() / 100) + 1);
+                }
+            }
+        }
+        return stat;
+    }
+
+    public double applymult(double basestat,Bufftype type){
+        double stat = basestat;
+        ArrayList<Statbuff> buffs = getBuffs();
+        for (Statbuff buff : buffs) {
+            if (buff.getType() == type) {
+                if (buff.isBuff()) {
+                    stat = stat * ((buff.getAmount() / 100) + 1);
+                } else {
+                    stat = stat * ((100 - buff.getAmount()) / 100);
+                }
+            }
+        }
+        return stat;
+    }
+
+    public double applyadd(double basestat,Bufftype type){
+        double stat = basestat;
+        ArrayList<Statbuff> buffs = getBuffs();
+        for (Statbuff buff : buffs) {
+            if (buff.getType() == type) {
+                if (buff.isBuff()) {
+                    stat = stat + buff.getAmount();
+                } else {
+                    stat = stat - buff.getAmount();
+                }
+            }
+        }
+        return stat;
+    }
+
+    public double applyAttackspeed(double basestat,Bufftype type){
+        double stat = basestat;
+        ArrayList<Statbuff> buffs = getBuffs();
+        for (Statbuff buff : buffs) {
+            if (buff.getType() == type) {
+                if (buff.isBuff()) {
+                    stat = stat / ((buff.getAmount() / 100) + 1);
+                } else {
+                    stat = stat / ((100 - buff.getAmount()) / 100);
+                }
+            }
+        }
+        return stat;
     }
 }
