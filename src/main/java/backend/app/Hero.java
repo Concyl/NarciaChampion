@@ -72,6 +72,8 @@ public abstract class Hero {
     private boolean canAutoAttack = true;
     private double autoattackcooldown;
     private boolean isBlind=false;
+    @Getter @Setter private boolean immuneAll=false;
+
 
     @Getter private final ArrayList<SpecialIgnores> passiveIgnores = new ArrayList<>();
 
@@ -151,6 +153,9 @@ public abstract class Hero {
         else if(buff instanceof Immunity){
             this.immunities.add((Immunity) buff);
         }
+        else if(buff instanceof Impairment){
+            this.impairments.add((Impairment)buff);
+        }
     }
 
     public void calculateNegativeEffects(){
@@ -162,20 +167,20 @@ public abstract class Hero {
                 case FROST:
                 case ENTANGLE:
                 case PETRIFY:
-                    this.target.applyStuns();
+                    this.applyStuns();
                     break;
                 case SILENCE:
                 case INHIBIT:
-                    this.target.applySilence();
-                    this.target.cantReceiveEnergy();
+                    this.applySilence();
+                    this.cantReceiveEnergy();
                     break;
                 case DISARM:
-                    this.target.cantAutoAttack();
+                    this.cantAutoAttack();
                 case BLIND:
-                    this.target.isBlinded();
+                    this.isBlinded();
                 case PARALYZE:
-                    this.target.applyStuns();
-                    this.target.cantReceiveEnergy();
+                    this.applyStuns();
+                    this.cantReceiveEnergy();
                     // TODO
                     // KEINE HEILUNG
             }
@@ -305,14 +310,41 @@ public abstract class Hero {
     }
 
     public void reduceCooldowns(){
-        if(this.autoattackcooldown > 0){
-            this.autoattackcooldown--;
-        }
+        reduceAutoAttackCooldown();
         reduceBuffCooldowns();
+        reduceImmunityCooldowns();
+        reduceImpairmentCooldowns();
         for(int i = 0;i<this.getSpecialAbilities().size();i++){
             this.getSpecialAbilities().get(i).update();
         }
         this.skill.update();
+    }
+
+    private void reduceAutoAttackCooldown(){
+        if(this.autoattackcooldown > 0){
+            this.autoattackcooldown--;
+        }
+    }
+
+    private void reduceImpairmentCooldowns(){
+        boolean changed = false;
+        for(Impairment buff : this.getImpairments()){
+            buff.update();
+            if(buff.isExpired()){
+                changed = true;
+            }
+        }
+        if(changed){
+            this.getImpairments().removeIf(Buff::isExpired);
+            this.calculateNegativeEffects();
+        }
+    }
+
+    private void reduceImmunityCooldowns(){
+        for(Immunity buff : this.getImmunities()){
+            buff.update();
+        }
+        this.getImmunities().removeIf(Buff::isExpired);
     }
 
     private void reduceBuffCooldowns(){
@@ -326,7 +358,7 @@ public abstract class Hero {
         if(removedTypes.size() == 0){
             return;
         }
-        this.getBuffs().removeIf(x -> x.isExpired());
+        this.getBuffs().removeIf(Buff::isExpired);
         removedTypes = new ArrayList<>(new LinkedHashSet<>(removedTypes));
         for( Bufftype type : removedTypes){
             type.recalculateStat(this);

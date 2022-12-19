@@ -8,8 +8,7 @@
     "timer": 1800,
     "name": "Attack Buff 50%",
     "type": "ATTACK",
-    "amount": 50,
-    "isImmunity": false
+    "amount": 50
   },
   {
     "typename": "backend.app.Buffs.Statbuff",
@@ -20,8 +19,7 @@
     "timer": 1800,
     "name": "Def Buff 50%",
     "type": "DEF",
-    "amount": 50,
-    "isImmunity": false
+    "amount": 50
   },
   {
     "typename": "backend.app.Buffs.SpecialBuff",
@@ -33,5 +31,15 @@
     "type": "DAMAGECAP",
     "value": 100,
     "ignore": false
+  },
+  {
+    "typename": "backend.app.Buffs.Impairment",
+    "id": 3,
+    "preciseOrigin": "Baseline Impairment",
+    "isRemovable": false,
+    "timer": 1800,
+    "name": "Add Stun",
+    "type": "STUN",
+    "ignore": []
   }
 ]

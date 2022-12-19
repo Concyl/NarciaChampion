@@ -23,6 +23,8 @@ public class CreateSpecialAbility extends Ability {
             ability.setPreciseOrigin(specialAbility.getName());
             target.addSpecialAbility(ability);
             ability.init(specialAbility.getOwner(),target);
+            String s = target.getFullname()+" receives "+ability.getName()+" from "+specialAbility.getOwner().getFullname() +" by "+specialAbility.getName();
+            target.getBattlefield().getCombatText().addCombatText(s);
         }
     }
 }

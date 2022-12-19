@@ -73,7 +73,7 @@ public enum Bufftype {
     ENERGY {
         @Override
         public void recalculateStat(Hero hero) {
-
+            hero.setEnergyrecoveryrate((int) hero.applymult(hero.getCoreStats().getMovementspeed(),Bufftype.ENERGY));
         }
     },
     STUN{

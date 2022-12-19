@@ -13,7 +13,7 @@ public class Immunity extends Buff{
         this.type = type;
     }
 
-    public Immunity(String preciseOrigin, boolean isRemovable, int timer, String name, int id) {
+    public Immunity(String preciseOrigin, boolean isRemovable, int timer, String name, int id, Bufftype type) {
         super(preciseOrigin, isRemovable, timer, name, id);
         this.type = type;
     }
@@ -30,5 +30,14 @@ public class Immunity extends Buff{
         this.target.calculateNegativeEffects();
         String s = this.target.getFullname()+" receives "+this.type.toString()+" Immunity from "+this.origin.getFullname();
         this.origin.getBattlefield().getCombatText().addCombatText(s);
+    }
+
+    @Override
+    public void update(){
+        super.update();
+        if(this.timer == 0){
+            String s=this.target.getFullname() + " loses "+ this.type.toString() + " Immunity from " + this.origin.getFullname();
+            this.origin.getBattlefield().getCombatText().addCombatText(s);
+        }
     }
 }

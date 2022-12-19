@@ -1,6 +1,8 @@
 package backend.app.Heroes;
 
 import backend.app.Buffs.Bufftype;
+import backend.app.Buffs.Impairment;
+import backend.app.Buffs.SpecialIgnores;
 import backend.app.Buffs.Statbuff;
 import backend.app.Hero;
 import backend.app.Skill;
@@ -24,8 +26,9 @@ public class DummyNoobHeld extends Hero {
         ArrayList<Hero> enemies = getAmountofAliveHeroes(1,this.getEnemyTeam());
         for(Hero hero : enemies){
             if(this.isAlive()) {
-                //Statbuff immun = new Statbuff(this,hero,"DummyNoobSkill",false,false,true,100,"Para Debuff", Bufftype.PARALYZE,95);
-                //immun.apply();
+                ArrayList<SpecialIgnores> specialIgnores = new ArrayList<>();
+                Impairment immun = new Impairment(this,hero,"DummyNoobSkill",false,60,"Stun Debuff",specialIgnores, Bufftype.STUN);
+                immun.apply();
                 //DamageEffect damage = new DamageEffect(this, enemies.get(i), DamageEffect.DamageType.FLATPERCENT, 70, "Dynamica Skill", DamageEffect.SpecialIgnores.IGNOREREFLECT);
                // damage.applyDamage();
             }

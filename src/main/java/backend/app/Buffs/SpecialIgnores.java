@@ -48,6 +48,12 @@ public enum SpecialIgnores {
         public void addSpecialIgnore(SpecialBuff buff){
 
         }
+    },
+    ALL{
+        @Override
+        public void addSpecialIgnore(SpecialBuff buff){
+
+        }
     };
     public abstract void addSpecialIgnore(SpecialBuff buff);
 }

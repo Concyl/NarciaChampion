@@ -109,29 +109,29 @@ public class Battlefield {
     }
 
     private void heroActionLoop(){
-        for(int i = 0;i<this.activeblueHeroes.size();i++){
-            this.activeblueHeroes.get(i).reduceCooldowns();
+        for (Hero activeblueHero : this.activeblueHeroes) {
+            activeblueHero.reduceCooldowns();
         }
-        for(int i = 0;i<this.activeredHeroes.size();i++){
-            this.activeredHeroes.get(i).reduceCooldowns();
+        for (Hero activeredHero : this.activeredHeroes) {
+            activeredHero.reduceCooldowns();
         }
-        for(int i = 0;i<this.activeblueHeroes.size();i++){
-            this.activeblueHeroes.get(i).move();
+        for (Hero activeblueHero : this.activeblueHeroes) {
+            activeblueHero.move();
         }
-        for(int i = 0;i<this.activeredHeroes.size();i++){
-            this.activeredHeroes.get(i).move();
+        for (Hero activeredHero : this.activeredHeroes) {
+            activeredHero.move();
         }
-        for(int i = 0;i<this.activeblueHeroes.size();i++){
-            this.activeblueHeroes.get(i).autoattack();
+        for (Hero activeblueHero : this.activeblueHeroes) {
+            activeblueHero.autoattack();
         }
-        for(int i = 0;i<this.activeredHeroes.size();i++){
-            this.activeredHeroes.get(i).autoattack();
+        for (Hero activeredHero : this.activeredHeroes) {
+            activeredHero.autoattack();
         }
-        for(int i = 0;i<this.activeblueHeroes.size();i++){
-            this.activeblueHeroes.get(i).activateAutoProcSkill();
+        for (Hero activeblueHero : this.activeblueHeroes) {
+            activeblueHero.activateAutoProcSkill();
         }
-        for(int i = 0;i<this.activeredHeroes.size();i++){
-            this.activeredHeroes.get(i).activateAutoProcSkill();
+        for (Hero activeredHero : this.activeredHeroes) {
+            activeredHero.activateAutoProcSkill();
         }
     }
 
