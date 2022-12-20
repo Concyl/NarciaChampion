@@ -174,7 +174,7 @@ public class DamageEffect {
 
     private int reflect(int damage){
         int reflectDamage = damage;
-        int reflect = this.receiver.getReflect();
+        int reflect = this.receiver.getReflectother();
         if(reflect != 0 && !this.specialIgnores.contains(SpecialIgnores.IGNOREREFLECT) && !this.attacker.getPassiveIgnore(SpecialIgnores.IGNOREREFLECT)) {
             reflectDamage = damage * (100 - reflect) / 100;
             if (!this.specialIgnores.contains(SpecialIgnores.NOREFLECTEDDAMAGE)) {

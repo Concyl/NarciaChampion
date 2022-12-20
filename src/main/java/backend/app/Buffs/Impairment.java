@@ -33,13 +33,13 @@ public class Impairment extends Buff{
     @Override
     public void apply(){
         if(!canApplyDebuff()){
-            String s = this.target.getFullname()+" blocked "+this.type.toString()+" from "+this.origin.getFullname();
+            String s = this.target.getFullname()+" blocked "+this.type.toString()+" from "+this.origin.getFullname()+" by "+ this.name;
             this.origin.getBattlefield().getCombatText().addCombatText(s);
             return;
         }
         this.target.addBuff(this);
         this.target.calculateNegativeEffects();
-        String s = this.target.getFullname()+" receives "+this.type.toString()+" from "+this.origin.getFullname();
+        String s = this.target.getFullname()+" receives "+this.type.toString()+" from "+this.origin.getFullname()+" by "+ this.name;
         this.origin.getBattlefield().getCombatText().addCombatText(s);
     }
 

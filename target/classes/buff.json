@@ -26,10 +26,9 @@
     "id": 2,
     "preciseOrigin": "Baseline SpecialBuff",
     "isRemovable": false,
-    "timer": 1800,
-    "name": "Add DamageCap",
-    "type": "DAMAGECAP",
-    "value": 100,
+    "timer": 180,
+    "name": "Add Immune All",
+    "type": "ALL",
     "ignore": false
   },
   {
@@ -41,5 +40,16 @@
     "name": "Add Stun",
     "type": "STUN",
     "ignore": []
+  },
+  {
+    "typename": "backend.app.Buffs.SpecialBuff",
+    "id": 4,
+    "preciseOrigin": "Baseline Damage Cap",
+    "isRemovable": false,
+    "timer": 1800,
+    "name": "Damage Cap",
+    "type": "DAMAGECAP",
+    "value": 200,
+    "ignore": false
   }
 ]

@@ -3,7 +3,6 @@ package backend.app;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.stream.Collectors;
 
 import backend.app.Buffs.*;
 import lombok.Getter;
@@ -14,10 +13,6 @@ public abstract class Hero {
 
     public enum Team{
         BLUE,RED
-    }
-
-    public enum Immunities{
-        ALL,
     }
 
     public enum Fraction{
@@ -74,12 +69,13 @@ public abstract class Hero {
     private boolean isBlind=false;
     @Getter @Setter private boolean immuneAll=false;
 
-
-    @Getter private final ArrayList<SpecialIgnores> passiveIgnores = new ArrayList<>();
-
     @Getter private final ArrayList<Statbuff> buffs = new ArrayList<>();
     @Getter private final ArrayList<Immunity> immunities = new ArrayList<>();
     @Getter private final ArrayList<Impairment> impairments = new ArrayList<>();
+    @Getter private final ArrayList<SpecialBuff> specialBuffs = new ArrayList<>();
+    @Getter private final ArrayList<SpecialBuff> passiveIgnores = new ArrayList<>();
+
+
     @Getter private final ArrayList<Talent> talents = new ArrayList<>();
     @Getter private final ArrayList<SpecialAbility> specialAbilities = new ArrayList<>();
     @Getter private final ArrayList<TimeBasedSpecialAbility> timespecialAbilities = new ArrayList<>();
@@ -122,10 +118,6 @@ public abstract class Hero {
         this.calculateRealAttackspeed();
     }
 
-    public int getReflect(){
-        return this.reflectother;
-    }
-
     public void addSpecialAbility(SpecialAbility specialAbility){
         this.getSpecialAbilities().add(specialAbility);
         if(specialAbility instanceof TimeBasedSpecialAbility){
@@ -133,17 +125,29 @@ public abstract class Hero {
         }
     }
 
-    public void addDamageCap(SpecialBuff buff){
-        int newDamageCap = buff.getValue();
-        if(this.damageCap<0){
-            this.damageCap = newDamageCap;
+    public void updateImmuneAll(){
+        if(this.specialBuffs.stream().noneMatch(x -> x.getType() == SpecialIgnores.ALL)){
+            this.immuneAll = false;
         }
-        else{
-            if(this.damageCap>newDamageCap){
-                this.damageCap = newDamageCap;
+        else {
+            this.immuneAll = true;
+            removeAllDebuffs();
+        }
+    }
+
+    //TODO
+    public void removeAllDebuffs(){
+
+    }
+
+    public void updateDamageCap(){
+        int lowestDamageCap = Integer.MAX_VALUE;
+        for(SpecialBuff buff: this.specialBuffs){
+            if(buff.getType()==SpecialIgnores.DAMAGECAP && buff.getValue() < lowestDamageCap){
+                lowestDamageCap = buff.getValue();
             }
         }
-        this.addBuff(buff);
+       this.damageCap = lowestDamageCap == Integer.MAX_VALUE ? -1 : lowestDamageCap;
     }
 
     public void addBuff(Buff buff){
@@ -155,6 +159,14 @@ public abstract class Hero {
         }
         else if(buff instanceof Impairment){
             this.impairments.add((Impairment)buff);
+        }
+        else if(buff instanceof SpecialBuff){
+            if(((SpecialBuff) buff).isIgnore()){
+                this.passiveIgnores.add((SpecialBuff)buff);
+            }
+            else{
+                this.specialBuffs.add((SpecialBuff)buff);
+            }
         }
     }
 
@@ -188,12 +200,7 @@ public abstract class Hero {
     }
 
     public void addPassiveIgnore(SpecialBuff buff){
-        this.passiveIgnores.add(buff.getType());
-        this.addBuff(buff);
-    }
-
-    public void removeSpecialBuff(SpecialBuff buff){
-
+        this.passiveIgnores.add(buff);
     }
 
     private int distanceToTarget(){
@@ -314,10 +321,28 @@ public abstract class Hero {
         reduceBuffCooldowns();
         reduceImmunityCooldowns();
         reduceImpairmentCooldowns();
+        reduceSpecialBuffCooldowns();
         for(int i = 0;i<this.getSpecialAbilities().size();i++){
             this.getSpecialAbilities().get(i).update();
         }
         this.skill.update();
+    }
+
+    private void reduceSpecialBuffCooldowns(){
+        ArrayList<SpecialIgnores> removedTypes = new ArrayList<>();
+        for(SpecialBuff buff : this.specialBuffs){
+            buff.update();
+            if(buff.isExpired()){
+                removedTypes.add(buff.getType());
+            }
+        }
+        if(removedTypes.size() == 0){
+            return;
+        }
+        this.getSpecialBuffs().removeIf(Buff::isExpired);
+        for(SpecialIgnores ignore : removedTypes){
+            ignore.updateSpecialIgnore(this);
+        }
     }
 
     private void reduceAutoAttackCooldown(){
@@ -476,9 +501,8 @@ public abstract class Hero {
         return HeroesinRange(radius,xpos,ypos,this.getEnemyTeam());
     }
 
-    //TODO
     public boolean getPassiveIgnore(SpecialIgnores ignore){
-        return this.getPassiveIgnores().contains(ignore);
+        return this.passiveIgnores.stream().anyMatch(x -> x.getType() == ignore);
     }
 
     public void resetNegativeEffets(){
@@ -530,12 +554,12 @@ public abstract class Hero {
     private ArrayList<Hero>HeroesinRange(int radius, int xpos, int ypos,ArrayList<Hero> heroes){
         ArrayList<Hero> aliveheroes = filterDeadHeroes(heroes);
         ArrayList<Hero> inRangeHeroes = new ArrayList<>();
-        for(int i = 0;i<aliveheroes.size();i++) {
-            double xdistance = Math.abs(xpos-aliveheroes.get(i).getXCoordinate());
-            double ydistance = Math.abs(ypos-aliveheroes.get(i).getYCoordinate());
-            double distance = Math.sqrt((xdistance*xdistance)+(ydistance*ydistance));
-            if(distance<= radius){
-                inRangeHeroes.add(aliveheroes.get(i));
+        for (Hero alivehero : aliveheroes) {
+            double xdistance = Math.abs(xpos - alivehero.getXCoordinate());
+            double ydistance = Math.abs(ypos - alivehero.getYCoordinate());
+            double distance = Math.sqrt((xdistance * xdistance) + (ydistance * ydistance));
+            if (distance <= radius) {
+                inRangeHeroes.add(alivehero);
             }
         }
         return shuffle(aliveheroes);
@@ -543,18 +567,16 @@ public abstract class Hero {
 
     private ArrayList<Hero> filterDeadHeroes(ArrayList<Hero> heroes){
         ArrayList<Hero> aliveheroes = new ArrayList<>();
-        for(int i = 0;i<heroes.size();i++){
-            if(heroes.get(i).isAlive()){
-                aliveheroes.add(heroes.get(i));
+        for (Hero hero : heroes) {
+            if (hero.isAlive()) {
+                aliveheroes.add(hero);
             }
         }
         return aliveheroes;
     }
     private ArrayList<Hero> shuffle(ArrayList<Hero> heroes){
         ArrayList<Hero> shuffleheroes = new ArrayList<>();
-        for(int i = 0;i<heroes.size();i++){
-            shuffleheroes.add(heroes.get(i));
-        }
+        shuffleheroes.addAll(heroes);
         Collections.shuffle(heroes);
         return shuffleheroes;
     }
@@ -573,7 +595,6 @@ public abstract class Hero {
 
 
     public double applyHp(double basestat,Bufftype type){
-        double stat = basestat;
         double mult=1;
         ArrayList<Statbuff> buffs = getBuffs();
         for (Statbuff buff : buffs) {
@@ -586,8 +607,7 @@ public abstract class Hero {
                 }
             }
         }
-        double newHP = stat*mult;
-        return newHP;
+        return basestat *mult;
     }
 
     public double applyreverse(double basestat,Bufftype type){

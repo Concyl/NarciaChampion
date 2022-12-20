@@ -28,7 +28,7 @@ public class Immunity extends Buff{
         this.target.getImpairments().removeIf(x -> x.getType() == this.type);
         this.target.addBuff(this);
         this.target.calculateNegativeEffects();
-        String s = this.target.getFullname()+" receives "+this.type.toString()+" Immunity from "+this.origin.getFullname();
+        String s = this.target.getFullname()+" receives "+this.type.toString()+" Immunity from "+this.origin.getFullname()+" by "+ this.name;
         this.origin.getBattlefield().getCombatText().addCombatText(s);
     }
 
@@ -36,7 +36,7 @@ public class Immunity extends Buff{
     public void update(){
         super.update();
         if(this.timer == 0){
-            String s=this.target.getFullname() + " loses "+ this.type.toString() + " Immunity from " + this.origin.getFullname();
+            String s=this.target.getFullname() + " loses "+ this.type.toString() + " Immunity from " + this.origin.getFullname()+" by "+ this.name;
             this.origin.getBattlefield().getCombatText().addCombatText(s);
         }
     }

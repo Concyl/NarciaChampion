@@ -19,25 +19,29 @@ public class SpecialBuff extends Buff{
     public SpecialBuff(JSONObject json){
         super(json);
         this.type = SpecialIgnores.valueOf((String)json.get("type"));
-        this.value = (int)(long)json.get("value");
+        this.value = (int)(long)json.getOrDefault("value",-1L);
         this.ignore = (boolean)json.get("ignore");
     }
 
     @Override
     public void apply(){
+        this.target.addBuff(this);
         if(this.isIgnore()){
             this.target.addPassiveIgnore(this);
         }
         else{
-            this.type.addSpecialIgnore(this);
+            this.type.updateSpecialIgnore(this.target);
         }
+        String s = this.target.getFullname()+" receives "+this.type.toString()+" from "+this.origin.getFullname()+" by "+ this.name;
+        this.origin.getBattlefield().getCombatText().addCombatText(s);
     }
 
     @Override
     public void update(){
         super.update();
         if(this.timer == 0){
-            this.target.removeSpecialBuff(this);
+            String s = this.target.getFullname()+" loses "+this.type.toString()+" from "+this.origin.getFullname()+" by "+ this.name;
+            this.origin.getBattlefield().getCombatText().addCombatText(s);
         }
     }
 }

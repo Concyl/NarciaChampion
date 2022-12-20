@@ -30,7 +30,7 @@ public class Statbuff extends Buff {
     public void apply(){
         String s;
         if(this.isBuff){
-            s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" Buff from "+this.origin.getFullname();
+            s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" Buff from "+this.origin.getFullname()+" by "+ this.name;
         }
         else{
             if(!canApplyDebuff()){
@@ -38,7 +38,7 @@ public class Statbuff extends Buff {
                 this.origin.getBattlefield().getCombatText().addCombatText(s);
                 return;
             }
-            s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" DeBuff from "+this.origin.getFullname();
+            s = this.target.getFullname()+" receives "+this.amount+"% "+this.type.toString()+" DeBuff from "+this.origin.getFullname()+" by "+ this.name;
         }
         this.origin.getBattlefield().getCombatText().addCombatText(s);
         this.target.addBuff(this);
