@@ -44,12 +44,12 @@
   {
     "typename": "backend.app.Buffs.SpecialBuff",
     "id": 4,
-    "preciseOrigin": "Baseline Damage Cap",
+    "preciseOrigin": "Baseline Damage To LP",
     "isRemovable": false,
-    "timer": 1800,
-    "name": "Damage Cap",
-    "type": "DAMAGECAP",
-    "value": 200,
+    "timer": 100,
+    "name": "Damage to LP ",
+    "type": "DAMAGETOLP",
+    "chance": 100,
     "ignore": false
   }
 ]

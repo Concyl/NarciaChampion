@@ -13,7 +13,7 @@ public enum SpecialIgnores {
     DAMAGETOLP{
         @Override
         public void updateSpecialIgnore(Hero hero){
-
+            hero.updateDamageToLp();
         }
 
     },

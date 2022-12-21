@@ -54,20 +54,19 @@ public abstract class Hero {
 
     @Getter @Setter private int damageCap=-1;
     @Getter @Setter private int damageReflectCap=-1;
-
     @Getter @Setter private int reflecttalent=0;
     @Getter @Setter private int reflectother=0;
-
     @Getter @Setter private boolean stealth = false;
     @Getter @Setter private boolean confusion = false;
+    @Getter @Setter private boolean isBlind=false;
+    @Getter @Setter private boolean immuneAll=false;
+    @Getter @Setter private int damageToLp = -1;
 
     @Getter @Setter private int autoattackrange;
     @Getter @Setter private double attackspeed;
     @Getter @Setter private double realattackspeed;
     private boolean canAutoAttack = true;
     private double autoattackcooldown;
-    private boolean isBlind=false;
-    @Getter @Setter private boolean immuneAll=false;
 
     @Getter private final ArrayList<Statbuff> buffs = new ArrayList<>();
     @Getter private final ArrayList<Immunity> immunities = new ArrayList<>();
@@ -118,6 +117,11 @@ public abstract class Hero {
         this.calculateRealAttackspeed();
     }
 
+    //TODO
+    public void removeAllDebuffs(){
+
+    }
+
     public void addSpecialAbility(SpecialAbility specialAbility){
         this.getSpecialAbilities().add(specialAbility);
         if(specialAbility instanceof TimeBasedSpecialAbility){
@@ -135,9 +139,14 @@ public abstract class Hero {
         }
     }
 
-    //TODO
-    public void removeAllDebuffs(){
-
+    public void updateDamageToLp(){
+        int chance = -1;
+        for(SpecialBuff buff: this.specialBuffs){
+            if(buff.getType() == SpecialIgnores.DAMAGETOLP && buff.getChance() > chance){
+                chance = buff.getChance();
+            }
+        }
+        this.damageToLp = chance;
     }
 
     public void updateDamageCap(){
@@ -403,7 +412,7 @@ public abstract class Hero {
             if(!isBlind){
                 DamageEffect damage = new DamageEffect(this,this.target, DamageEffect.DamageType.NORMAL,1, "Auto Attack");
                 damage.applyDamage();
-                if(damage.isHit()){
+                if(damage.isHit() && !damage.isDamageHealed()){
                     this.addAutoEnergy();
                 }
             }
@@ -446,11 +455,6 @@ public abstract class Hero {
 
     // TODO
     public boolean getSpikeshield(){
-        return false;
-    }
-
-    //TODO
-    public boolean getDamageToLP(){
         return false;
     }
 

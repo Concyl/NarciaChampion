@@ -1,9 +1,6 @@
 package backend.app.Heroes;
 
-import backend.app.Buffs.Bufftype;
-import backend.app.Buffs.Impairment;
-import backend.app.Buffs.SpecialIgnores;
-import backend.app.Buffs.Statbuff;
+import backend.app.Buffs.*;
 import backend.app.Hero;
 import backend.app.Skill;
 import org.json.simple.JSONObject;

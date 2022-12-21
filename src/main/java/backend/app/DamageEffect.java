@@ -4,6 +4,7 @@ import backend.app.Buffs.SpecialIgnores;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class DamageEffect {
     public enum DamageType {
@@ -12,6 +13,7 @@ public class DamageEffect {
 
 
     @Getter private boolean hit = false;
+    @Getter private boolean damageHealed = false;
     private DamageType damageType;
     private double multiplier;
     private Hero attacker;
@@ -88,11 +90,17 @@ public class DamageEffect {
     }
 
     private boolean damageToLpCheck(){
-        boolean damageToLpactive = this.receiver.getDamageToLP();
-        if(damageToLpactive && !this.specialIgnores.contains(SpecialIgnores.DAMAGETOLP) && !this.attacker.getPassiveIgnore(SpecialIgnores.DAMAGETOLP)){
-            return true;
+        int damageToLpactive = this.receiver.getDamageToLp();
+        if(damageToLpactive == -1){
+            return false;
         }
-        return false;
+        if(damageToLpactive < 100){
+            Random random = new Random();
+            if(random.nextInt(100)> damageToLpactive){
+                return false;
+            }
+        }
+        return !this.specialIgnores.contains(SpecialIgnores.DAMAGETOLP) && !this.attacker.getPassiveIgnore(SpecialIgnores.DAMAGETOLP);
     }
 
     private int dealTrueDamage(){
@@ -135,6 +143,7 @@ public class DamageEffect {
         }
         if(this.damageToLpCheck()){
             this.receiver.heal(damage,"Damage To Lp");
+            this.damageHealed = true;
             return;
         }
         if(damage == 0){
