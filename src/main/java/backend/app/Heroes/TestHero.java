@@ -15,10 +15,10 @@ public class TestHero extends Hero{
 
     public void init(){
         this.skill = new Skill(30,0,"TestHero Skill");
-        // SpecialBuff immuna = new SpecialBuff(this,this,"DummyNoobSkill",false,250,"DAMAGETOLPPASSIVE", SpecialIgnores.DAMAGETOLP,-1,true,100);
-        // immuna.apply();
+        SpecialBuff immuna = new SpecialBuff(this,this,"DummyNoobSkill",false,250,"DamageCap", SpecialIgnores.DAMAGECAP,100,false,100);
+        immuna.apply();
         //this.getPassiveIgnores().add(SpecialIgnores.DAMAGECAP);
-        this.setReflectother(10);
+        //this.setReflectother(10);
         Statbuff def = new Statbuff(this,this,"BaseLineAbility",true,false,1500,"Def", Bufftype.DEF,95);
         def.apply();
         Statbuff immun = new Statbuff(this,this,"BaseLineAbility",true,false,1500,"Att 1", Bufftype.ATTACK,95);

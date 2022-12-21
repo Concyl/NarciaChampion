@@ -15,6 +15,7 @@ public class DummyNoobHeld extends Hero {
 
     public void init(){
         this.skill = new Skill(30,0,"DummyNoobHero Skill");
+
        // this.getPassiveIgnores().add(DamageEffect.SpecialIgnores.IGNOREREFLECT);
         //this.setDamageCap(11);
     }

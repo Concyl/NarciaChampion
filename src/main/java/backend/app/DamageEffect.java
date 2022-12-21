@@ -52,7 +52,7 @@ public class DamageEffect {
 
     public void applyDamage() {
         if(!hitCheck()){
-            String s =this.attacker.getFullname()+" missed "+this.origin+ "against "+receiver.getFullname();
+            String s =this.receiver.getFullname()+" dodged "+this.origin+ " from "+this.attacker.getFullname();
             this.attacker.getBattlefield().getCombatText().addCombatText(s);
             return;
         }
@@ -182,21 +182,35 @@ public class DamageEffect {
     }
 
     private int reflect(int damage){
-        int reflectDamage = damage;
-        int reflect = this.receiver.getReflectother();
+        int reflectTalent = 0;
+        if(!this.receiver.isSilenced()){
+            reflectTalent = this.receiver.getReflectTalent();
+        }
+        int reflectOther = this.receiver.getReflect();
+        int reflect = Math.max(reflectOther, reflectTalent);
+        double reflectDamage = damage;
         if(reflect != 0 && !this.specialIgnores.contains(SpecialIgnores.IGNOREREFLECT) && !this.attacker.getPassiveIgnore(SpecialIgnores.IGNOREREFLECT)) {
-            reflectDamage = damage * (100 - reflect) / 100;
+            reflectDamage = (double)damage * (100 - reflect) / 100;
             if (!this.specialIgnores.contains(SpecialIgnores.NOREFLECTEDDAMAGE)) {
-                int reflectedDamage = damage - reflectDamage;
+                int reflectedDamage = (int) (damage - reflectDamage);
                 this.receiveReflectDamage(reflectedDamage);
             }
         }
-        return reflectDamage;
+        else if(reflect == 0 && this.receiver.getPassiveIgnore(SpecialIgnores.REFLECTCAP)){
+            double random = Math.random();
+            if(random < 0.6){
+                String combattext = "60% Chance Spikeshield triggert";
+                this.attacker.getBattlefield().getCombatText().addCombatText(combattext);
+                this.receiveReflectDamage(damage);
+                reflectDamage = 0;
+            }
+        }
+        return (int) reflectDamage;
     }
 
     private int damageReflectCap(int damage){
         int reflectCap = this.attacker.getDamageReflectCap();
-        if(reflectCap>0 && reflectCap<damage && !this.attacker.getSpikeshield()){
+        if(reflectCap>0 && reflectCap<damage && !this.receiver.getPassiveIgnore(SpecialIgnores.REFLECTCAP)){
             damage = reflectCap;
         }
         return damage;
@@ -205,7 +219,7 @@ public class DamageEffect {
     private int damageCap(int damage,Hero attacker, Hero defender){
         if(!this.specialIgnores.contains(SpecialIgnores.DAMAGECAP) && !attacker.getPassiveIgnore(SpecialIgnores.DAMAGECAP)){
             int damagecap = defender.getDamageCap();
-            if(damagecap<damage){
+            if(damagecap<damage && damagecap>0){
                 damage = damagecap;
             }
         }

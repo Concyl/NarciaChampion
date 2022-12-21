@@ -44,12 +44,25 @@
   {
     "typename": "backend.app.Buffs.SpecialBuff",
     "id": 4,
-    "preciseOrigin": "Baseline Damage To LP",
+    "preciseOrigin": "Baseline Reflect",
     "isRemovable": false,
     "timer": 100,
-    "name": "Damage to LP ",
-    "type": "DAMAGETOLP",
+    "name": "Sternengitter Reflect",
+    "type": "REFLECT",
     "chance": 100,
+    "value": 100,
+    "ignore": false
+  },
+  {
+    "typename": "backend.app.Buffs.SpecialBuff",
+    "id": 5,
+    "preciseOrigin": "Baseline Reflect Cap",
+    "isRemovable": false,
+    "timer": 1500,
+    "name": "Drachen Deckung",
+    "type": "REFLECTCAP",
+    "chance": 100,
+    "value": 25,
     "ignore": false
   }
 ]

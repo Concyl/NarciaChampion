@@ -20,28 +20,28 @@ public enum SpecialIgnores {
     CANTMISS{
         @Override
         public void updateSpecialIgnore(Hero hero){
-
+            // Never used
         }
 
     },
     DAMAGEREDUCTION{
         @Override
         public void updateSpecialIgnore(Hero hero){
-
+            // Never used
         }
 
     },
     NOREFLECTEDDAMAGE{
         @Override
         public void updateSpecialIgnore(Hero hero){
-
+            // Never used
         }
 
     },
     IGNOREREFLECT{
         @Override
         public void updateSpecialIgnore(Hero hero){
-
+            // Never used
         }
 
     },
@@ -49,6 +49,27 @@ public enum SpecialIgnores {
         @Override
         public void updateSpecialIgnore(Hero hero){
 
+        }
+
+    },
+    REFLECTTALENT{
+        @Override
+        public void updateSpecialIgnore(Hero hero){
+            hero.updateReflectTalent();
+        }
+
+    },
+    REFLECT{
+        @Override
+        public void updateSpecialIgnore(Hero hero){
+            hero.updateReflect();
+        }
+
+    },
+    REFLECTCAP{
+        @Override
+        public void updateSpecialIgnore(Hero hero){
+            hero.updateReflectCap();
         }
 
     },

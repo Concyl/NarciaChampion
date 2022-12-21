@@ -54,8 +54,8 @@ public abstract class Hero {
 
     @Getter @Setter private int damageCap=-1;
     @Getter @Setter private int damageReflectCap=-1;
-    @Getter @Setter private int reflecttalent=0;
-    @Getter @Setter private int reflectother=0;
+    @Getter @Setter private int reflect =0;
+    @Getter @Setter private int reflectTalent=0;
     @Getter @Setter private boolean stealth = false;
     @Getter @Setter private boolean confusion = false;
     @Getter @Setter private boolean isBlind=false;
@@ -137,6 +137,36 @@ public abstract class Hero {
             this.immuneAll = true;
             removeAllDebuffs();
         }
+    }
+
+    public void updateReflect(){
+        int reflect = 0;
+        for(SpecialBuff buff: this.specialBuffs){
+            if(buff.getType() == SpecialIgnores.REFLECT){
+                reflect = reflect + buff.getValue();
+            }
+        }
+        this.reflect = reflect;
+    }
+
+    public void updateReflectCap(){
+        int lowestReflectCap = Integer.MAX_VALUE;
+        for(SpecialBuff buff: this.specialBuffs){
+            if(buff.getType()==SpecialIgnores.REFLECTCAP && buff.getValue() < lowestReflectCap){
+                lowestReflectCap = buff.getValue();
+            }
+        }
+        this.damageReflectCap = lowestReflectCap == Integer.MAX_VALUE ? -1 : lowestReflectCap;
+    }
+
+    public void updateReflectTalent(){
+        int reflect = 0;
+        for(SpecialBuff buff: this.specialBuffs){
+            if(buff.getType() == SpecialIgnores.REFLECTTALENT){
+                reflect = reflect + buff.getValue();
+            }
+        }
+        this.reflectTalent = reflect;
     }
 
     public void updateDamageToLp(){
