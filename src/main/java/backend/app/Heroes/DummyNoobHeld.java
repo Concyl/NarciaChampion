@@ -27,7 +27,7 @@ public class DummyNoobHeld extends Hero {
                 ArrayList<SpecialIgnores> specialIgnores = new ArrayList<>();
                 specialIgnores.add(SpecialIgnores.ALL);
                 Impairment immun = new Impairment(this,hero,"DummyNoobSkill",false,250,"Stun Debuff",specialIgnores, Bufftype.STUN);
-                immun.apply();
+                //immun.apply();
                 //DamageEffect damage = new DamageEffect(this, enemies.get(i), DamageEffect.DamageType.FLATPERCENT, 70, "Dynamica Skill", DamageEffect.SpecialIgnores.IGNOREREFLECT);
                // damage.applyDamage();
             }

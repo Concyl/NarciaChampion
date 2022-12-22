@@ -64,5 +64,15 @@
     "chance": 100,
     "value": 25,
     "ignore": false
+  },
+  {
+    "typename": "backend.app.Buffs.SpecialBuff",
+    "id": 6,
+    "preciseOrigin": "Talent",
+    "isRemovable": false,
+    "timer": 1000,
+    "name": "Stealth",
+    "type": "STEALTH",
+    "ignore": false
   }
 ]

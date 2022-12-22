@@ -139,6 +139,15 @@ public abstract class Hero {
         }
     }
 
+    public void updateStealth(){
+        if(this.specialBuffs.stream().noneMatch(x -> x.getType() == SpecialIgnores.STEALTH)){
+            this.stealth = false;
+        }
+        else {
+            this.stealth = true;
+        }
+    }
+
     public void updateReflect(){
         int reflect = 0;
         for(SpecialBuff buff: this.specialBuffs){
@@ -258,7 +267,7 @@ public abstract class Hero {
         if(!isAlive()){
             return;
         }
-        if(this.target == null){
+        if(this.target == null || this.target.isStealth()){
             this.searchForTarget();
         }
         int distance = this.distanceToTarget();
@@ -481,11 +490,6 @@ public abstract class Hero {
             String death = this.getFullname()+ " dies";
             this.getBattlefield().getCombatText().addCombatText(death);
         }
-    }
-
-    // TODO
-    public boolean getSpikeshield(){
-        return false;
     }
 
     private void setAttackSpeedCd(){

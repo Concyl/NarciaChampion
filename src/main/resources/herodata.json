@@ -40,7 +40,7 @@
         "isFlying": false,
         "isLegendary": false,
         "specialAbilities":[0],
-        "buffs": [2,4]
+        "buffs": [2,4,6]
     },
     {
         "id": 1001,

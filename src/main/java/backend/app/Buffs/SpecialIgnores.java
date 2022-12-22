@@ -48,16 +48,14 @@ public enum SpecialIgnores {
     STEALTH{
         @Override
         public void updateSpecialIgnore(Hero hero){
-
+            hero.updateStealth();
         }
-
     },
     REFLECTTALENT{
         @Override
         public void updateSpecialIgnore(Hero hero){
             hero.updateReflectTalent();
         }
-
     },
     REFLECT{
         @Override

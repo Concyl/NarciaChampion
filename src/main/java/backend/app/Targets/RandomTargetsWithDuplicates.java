@@ -18,7 +18,8 @@ public class RandomTargetsWithDuplicates extends Target{
     public ArrayList<Hero> setTargets(ArrayList<Hero> heroes){
         ArrayList<Hero> targetableHeroes = this.targetableHeroes(heroes);
         ArrayList<Hero> targets = new ArrayList<>();
-        for(int i = 0;i<this.amount;i++){
+        int min = Math.min(this.amount,targetableHeroes.size());
+        for(int i = 0;i<min;i++){
             int randomNumber = (int)(Math.random()*targetableHeroes.size());
             if(!targets.contains(targetableHeroes.get(randomNumber))){
                 targets.add(targetableHeroes.get(randomNumber));
@@ -26,7 +27,6 @@ public class RandomTargetsWithDuplicates extends Target{
         }
         return targets;
     }
-
 
 
     @Override

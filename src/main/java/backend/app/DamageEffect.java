@@ -146,6 +146,9 @@ public class DamageEffect {
             this.damageHealed = true;
             return;
         }
+        if(this.receiver.isStealth()){
+            damage = 0;
+        }
         if(damage == 0){
             this.receiver.addAutoEnergy();
             return;
@@ -191,7 +194,7 @@ public class DamageEffect {
         double reflectDamage = damage;
         if(reflect != 0 && !this.specialIgnores.contains(SpecialIgnores.IGNOREREFLECT) && !this.attacker.getPassiveIgnore(SpecialIgnores.IGNOREREFLECT)) {
             reflectDamage = (double)damage * (100 - reflect) / 100;
-            if (!this.specialIgnores.contains(SpecialIgnores.NOREFLECTEDDAMAGE)) {
+            if (!this.specialIgnores.contains(SpecialIgnores.NOREFLECTEDDAMAGE) && !this.attacker.getPassiveIgnore(SpecialIgnores.NOREFLECTEDDAMAGE)) {
                 int reflectedDamage = (int) (damage - reflectDamage);
                 this.receiveReflectDamage(reflectedDamage);
             }
@@ -199,10 +202,12 @@ public class DamageEffect {
         else if(reflect == 0 && this.receiver.getPassiveIgnore(SpecialIgnores.REFLECTCAP)){
             double random = Math.random();
             if(random < 0.6){
+                reflectDamage = 0;
                 String combattext = "60% Chance Spikeshield triggert";
                 this.attacker.getBattlefield().getCombatText().addCombatText(combattext);
-                this.receiveReflectDamage(damage);
-                reflectDamage = 0;
+                if (!this.specialIgnores.contains(SpecialIgnores.NOREFLECTEDDAMAGE) && !this.attacker.getPassiveIgnore(SpecialIgnores.NOREFLECTEDDAMAGE)) {
+                    this.receiveReflectDamage(damage);
+                }
             }
         }
         return (int) reflectDamage;

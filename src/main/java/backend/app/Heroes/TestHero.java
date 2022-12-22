@@ -15,7 +15,7 @@ public class TestHero extends Hero{
 
     public void init(){
         this.skill = new Skill(30,0,"TestHero Skill");
-        SpecialBuff immuna = new SpecialBuff(this,this,"DummyNoobSkill",false,250,"DamageCap", SpecialIgnores.DAMAGECAP,100,false,100);
+        SpecialBuff immuna = new SpecialBuff(this,this,"DummyNoobSkill",false,250,"DamageCap", SpecialIgnores.NOREFLECTEDDAMAGE,100,true,100);
         immuna.apply();
         //this.getPassiveIgnores().add(SpecialIgnores.DAMAGECAP);
         //this.setReflectother(10);
