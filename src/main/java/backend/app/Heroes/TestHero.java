@@ -19,7 +19,7 @@ public class TestHero extends Hero{
         immuna.apply();
         //this.getPassiveIgnores().add(SpecialIgnores.DAMAGECAP);
         //this.setReflectother(10);
-        Statbuff def = new Statbuff(this,this,"BaseLineAbility",true,false,1500,"Def", Bufftype.DEF,95);
+        Statbuff def = new Statbuff(this,this,"BaseLineAbility",true,false,1500,"Def", Bufftype.DEF,40);
         def.apply();
         Statbuff immun = new Statbuff(this,this,"BaseLineAbility",true,false,1500,"Att 1", Bufftype.ATTACK,95);
         immun.apply();

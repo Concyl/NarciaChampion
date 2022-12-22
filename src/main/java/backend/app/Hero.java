@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 
 import backend.app.Buffs.*;
+import backend.app.Targets.AutoAttackTarget;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;
@@ -23,6 +24,7 @@ public abstract class Hero {
     protected Skill skill;
     private boolean revived = false;
 
+    @Getter @Setter private AutoAttackTarget autoAttackTarget = new AutoAttackTarget(this);
     @Getter @Setter private Hero target = null;
     private boolean inAttackRange = false;
     private boolean isFlying;
@@ -236,13 +238,19 @@ public abstract class Hero {
                     break;
                 case DISARM:
                     this.cantAutoAttack();
+                    break;
                 case BLIND:
                     this.isBlinded();
+                    break;
                 case PARALYZE:
                     this.applyStuns();
                     this.cantReceiveEnergy();
+                    break;
                     // TODO
                     // KEINE HEILUNG
+                case CONFUSION:
+                    this.applyConfusion();
+                    break;
             }
         }
     }
@@ -269,6 +277,9 @@ public abstract class Hero {
         }
         if(this.target == null || this.target.isStealth()){
             this.searchForTarget();
+        }
+        if(this.target == null){
+            return;
         }
         int distance = this.distanceToTarget();
         if(distance == -1){
@@ -329,20 +340,12 @@ public abstract class Hero {
         if(!this.isAlive()){
             return;
         }
-        if(this.target == null || !(this.target.isAlive())){
-            Hero closestHeroTarget = null;
-            int closestTarget = 0;
-            ArrayList<Hero> enemies = this.getEnemyTeam();
-            for(int i = 0;i<enemies.size();i++){
-                if(!enemies.get(i).isAlive()){
-                    continue;
-                }
-                double distance = Math.sqrt(Math.pow(Math.abs(enemies.get(i).getXCoordinate()-xCoordinate),2)+ Math.pow(Math.abs(enemies.get(i).getYCoordinate()-yCoordinate),2));
-                if(distance< closestTarget || closestTarget == 0){
-                    closestHeroTarget = enemies.get(i);
-                }
-            }
-            this.target = closestHeroTarget;
+        ArrayList<Hero> target = this.autoAttackTarget.getTarget();
+        if(target.size() != 0){
+            this.target = target.get(0);
+        }
+        else{
+            this.target = null;
         }
     }
 
@@ -439,8 +442,7 @@ public abstract class Hero {
     }
 
     public void autoattack(){
-        this.searchForTarget();
-        if(this.inAttackRange && this.isAlive() && this.autoattackcooldown == 0 && this.canAutoAttack){
+        if(this.inAttackRange && this.isAlive() && this.autoattackcooldown == 0 && this.canAutoAttack && this.target != null){
             if(!this.isAutoproc){
                 this.activateSkill();
             }
@@ -549,6 +551,7 @@ public abstract class Hero {
         this.canActivateSkill = true;
         this.silenced = false;
         this.canReceiveEnergy = true;
+        this.confusion = false;
     }
 
     public void applySilence(){
@@ -560,6 +563,10 @@ public abstract class Hero {
         this.canMove = false;
         this.canAutoAttack = false;
         this.canActivateSkill = false;
+    }
+
+    public void applyConfusion(){
+        this.confusion = true;
     }
 
     public void cantReceiveEnergy(){

@@ -71,13 +71,6 @@ public enum SpecialIgnores {
         }
 
     },
-    CONFUSION{
-        @Override
-        public void updateSpecialIgnore(Hero hero){
-
-        }
-
-    },
     ALL{
         @Override
         public void updateSpecialIgnore(Hero hero){

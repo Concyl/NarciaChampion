@@ -135,6 +135,11 @@ public enum Bufftype {
         public void recalculateStat(Hero hero) {
 
         }
-    },;
+    },
+    CONFUSION{
+        @Override
+        public void recalculateStat(Hero hero) {
+        }
+    };
     public abstract void recalculateStat(Hero hero);
 }

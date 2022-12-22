@@ -38,7 +38,8 @@ public abstract class Target {
             return this.caster.getAlliesTeam();
         }
         else {
-            ArrayList<Hero> confused = this.caster.getEnemyTeam();
+            ArrayList<Hero> confused = new ArrayList<>();
+            confused.addAll(this.caster.getEnemyTeam());
             confused.add(this.caster);
             return confused;
         }
@@ -57,12 +58,12 @@ public abstract class Target {
     protected ArrayList<Hero> heroesinRange(int radius, int xpos, int ypos, ArrayList<Hero> heroes){
         ArrayList<Hero> aliveheroes = targetableHeroes(heroes);
         ArrayList<Hero> inRangeHeroes = new ArrayList<>();
-        for(int i = 0;i<aliveheroes.size();i++) {
-            double xdistance = Math.abs(xpos-aliveheroes.get(i).getXCoordinate());
-            double ydistance = Math.abs(ypos-aliveheroes.get(i).getYCoordinate());
-            double distance = Math.sqrt((xdistance*xdistance)+(ydistance*ydistance));
-            if(distance<= radius*10){
-                inRangeHeroes.add(aliveheroes.get(i));
+        for (Hero alivehero : aliveheroes) {
+            double xdistance = Math.abs(xpos - alivehero.getXCoordinate());
+            double ydistance = Math.abs(ypos - alivehero.getYCoordinate());
+            double distance = Math.sqrt((xdistance * xdistance) + (ydistance * ydistance));
+            if (distance <= radius * 10) {
+                inRangeHeroes.add(alivehero);
             }
         }
         return inRangeHeroes;
@@ -87,9 +88,9 @@ public abstract class Target {
             return heroes;
         }
         ArrayList<Hero> aliveheroes = new ArrayList<>();
-        for(int i = 0;i<heroes.size();i++){
-            if(!heroes.get(i).isStealth()){
-                aliveheroes.add(heroes.get(i));
+        for (Hero hero : heroes) {
+            if (!hero.isStealth()) {
+                aliveheroes.add(hero);
             }
         }
         return aliveheroes;
