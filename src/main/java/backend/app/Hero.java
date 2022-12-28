@@ -56,7 +56,7 @@ public abstract class Hero {
 
     @Getter @Setter private int damageCap=-1;
     @Getter @Setter private int damageReflectCap=-1;
-    @Getter @Setter private int reflect =0;
+    @Setter private int reflect =0;
     @Getter @Setter private int reflectTalent=0;
     @Getter @Setter private boolean stealth = false;
     @Getter @Setter private boolean confusion = false;
@@ -119,6 +119,15 @@ public abstract class Hero {
         this.calculateRealAttackspeed();
     }
 
+    public int getReflect(){
+        for(SpecialBuff buff: this.specialBuffs){
+            if(buff.getType() == SpecialIgnores.REFLECT && buff.getStacks() > 0){
+                buff.decreaseStacks();
+            }
+        }
+        return this.reflect;
+    }
+
     //TODO
     public void removeAllDebuffs(){
 
@@ -153,7 +162,7 @@ public abstract class Hero {
     public void updateReflect(){
         int reflect = 0;
         for(SpecialBuff buff: this.specialBuffs){
-            if(buff.getType() == SpecialIgnores.REFLECT){
+            if(buff.getType() == SpecialIgnores.REFLECT && buff.getStacks()!= 0){
                 reflect = reflect + buff.getValue();
             }
         }
@@ -173,7 +182,7 @@ public abstract class Hero {
     public void updateReflectTalent(){
         int reflect = 0;
         for(SpecialBuff buff: this.specialBuffs){
-            if(buff.getType() == SpecialIgnores.REFLECTTALENT){
+            if(buff.getType() == SpecialIgnores.REFLECTTALENT && buff.getStacks() != 0){
                 reflect = reflect + buff.getValue();
             }
         }
@@ -383,7 +392,7 @@ public abstract class Hero {
         ArrayList<SpecialIgnores> removedTypes = new ArrayList<>();
         for(SpecialBuff buff : this.specialBuffs){
             buff.update();
-            if(buff.isExpired()){
+            if(buff.isExpired() || buff.getStacks() == 0){
                 removedTypes.add(buff.getType());
             }
         }

@@ -46,11 +46,12 @@
     "id": 4,
     "preciseOrigin": "Baseline Reflect",
     "isRemovable": false,
-    "timer": 100,
+    "timer": 1000,
     "name": "Sternengitter Reflect",
     "type": "REFLECT",
     "chance": 100,
-    "value": 100,
+    "value": 80,
+    "stacks": 4,
     "ignore": false
   },
   {
@@ -71,8 +72,9 @@
     "preciseOrigin": "Talent",
     "isRemovable": false,
     "timer": 1000,
-    "name": "Stealth",
-    "type": "STEALTH",
+    "name": "Damage Cap",
+    "type": "DAMAGECAP",
+    "value": 100,
     "ignore": false
   }
 ]
