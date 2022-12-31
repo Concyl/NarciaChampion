@@ -13,6 +13,7 @@ public class Buff {
     @Getter @Setter protected String name;
     @Getter @Setter protected Hero target;
     @Getter @Setter protected Hero origin;
+    @Getter @Setter protected boolean fromTalent = false;
 
     public Buff(Hero origin, Hero target, String preciseOrigin,boolean isRemovable, int timer, String name) {
         this.preciseOrigin = preciseOrigin;

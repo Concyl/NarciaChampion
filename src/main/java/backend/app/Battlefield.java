@@ -97,12 +97,11 @@ public class Battlefield {
     }
 
     public void update(){
+        this.heroActionLoop();
         GameState gamestatus = this.checkGameState();
         if(gamestatus != GameState.UNDECIDED){
             this.winner = gamestatus;
-        }
-        else {
-            this.heroActionLoop();
+            return;
         }
         this.timer++;
         this.combatText.update();
@@ -139,24 +138,12 @@ public class Battlefield {
         if(this.timer >= this.maxtimer){
             return GameState.REDWINTIMEOUT;
         }
-        boolean check = true;
-        for (Hero activeredHero : this.activeredHeroes) {
-            if (activeredHero.isAlive()) {
-                check = false;
-                break;
-            }
-        }
-        if(check){
+        activeredHeroes.removeIf(x -> !x.isAlive() && x.isRevived() && !x.isInProcessOfRevive());
+        if(activeredHeroes.stream().noneMatch(x-> x.isAlive() && !x.isInProcessOfRevive())){
             return GameState.BLUEWIN;
         }
-        check = true;
-        for (Hero activeblueHero : this.activeblueHeroes) {
-            if (activeblueHero.isAlive()) {
-                check = false;
-                break;
-            }
-        }
-        if(check){
+        activeblueHeroes.removeIf(x -> !x.isAlive() && x.isRevived() && !x.isInProcessOfRevive());
+        if(activeblueHeroes.stream().noneMatch(x-> x.isAlive() && !x.isInProcessOfRevive())){
             return GameState.REDWIN;
         }
         return GameState.UNDECIDED;

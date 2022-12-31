@@ -86,6 +86,7 @@ public class HeroInitController {
         ArrayList<Buff> buffs = new ArrayList<>();
         for(int i =0;i<list.size();i++){
             Buff buff = getBuffFromJSON(list.get(i));
+            buff.setFromTalent(true);
             buffs.add(buff);
         }
         return buffs;

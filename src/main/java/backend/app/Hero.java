@@ -22,7 +22,8 @@ public abstract class Hero {
 
     private Warden warden;
     protected Skill skill;
-    private boolean revived = false;
+    @Getter @Setter private boolean revived = false;
+    @Getter @Setter private boolean inProcessOfRevive = false;
 
     @Getter @Setter private AutoAttackTarget autoAttackTarget = new AutoAttackTarget(this);
     @Getter @Setter private Hero target = null;
@@ -494,13 +495,38 @@ public abstract class Hero {
 
     public void deathCheck(){
         if(this.currentHp <= 0){
-            this.setAlive(false);
-            this.target = null;
-            this.currentHp = 0;
-            this.energy = 0;
-            String death = this.getFullname()+ " dies";
-            this.getBattlefield().getCombatText().addCombatText(death);
+            this.death();
         }
+    }
+
+    private void death(){
+        this.setAlive(false);
+        this.target = null;
+        this.currentHp = 0;
+        this.energy = 0;
+        String death = this.getFullname()+ " dies";
+        this.getBattlefield().getCombatText().addCombatText(death);
+        if(this.specialBuffs.stream().anyMatch(x-> x.getType() == SpecialIgnores.REVIVE)){
+            this.inProcessOfRevive = true;
+            this.reviveTalent();
+        }
+    }
+
+    public void reviveTalent(){
+        int amount = 0;
+        for(SpecialBuff buff: this.specialBuffs){
+            if(buff.getType() == SpecialIgnores.REVIVE){
+                buff.decreaseStacks();
+                if( buff.getValue() > amount){
+                    amount = buff.getValue();
+                }
+            }
+        }
+        this.currentHp = this.maxHp*(100-(100-amount))/100;
+        this.inProcessOfRevive = false;
+        this.setAlive(true);
+        String death = this.getFullname()+ " revives by Talent";
+        this.getBattlefield().getCombatText().addCombatText(death);
     }
 
     private void setAttackSpeedCd(){
