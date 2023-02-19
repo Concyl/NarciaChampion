@@ -1,4 +1,4 @@
-package backend.app.Buffs;
+package backend.app.SpecialAbilities;
 
 import backend.app.Conditions.Condition;
 import backend.app.DataLoader;
@@ -109,16 +109,15 @@ public abstract class SpecialAbility {
     }
 
     public void initConditionsFromIdArray(JSONArray data){
-        for(int i =0;i<data.size();i++){
-            int id = Integer.valueOf(data.get(i).toString());
+        for (Object datum : data) {
+            int id = Integer.parseInt(datum.toString());
             this.conditions.add(getConditionFromID(id));
         }
     }
 
     private Condition getConditionFromID(int id){
         JSONObject jsonObject =DataLoader.getIDObjectfromJSON(id, HeroInitController.conditionJSON,"id");
-        Condition condition = Condition.fromJSON(jsonObject);
-        return condition;
+        return Condition.fromJSON(jsonObject);
     }
 
     public boolean checkConditions(){
@@ -130,5 +129,13 @@ public abstract class SpecialAbility {
         return true;
     }
 
+    public boolean canActivate(){
+        if(this.checkConditions() && this.cooldownTimer == 0 && (!this.owner.isSilenced() || !this.silencable)){
+            return true;
+        }
+        return false;
+    }
+
     public abstract void removeSpecialAbility();
+
 }

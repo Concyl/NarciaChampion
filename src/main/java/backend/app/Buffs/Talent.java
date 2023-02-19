@@ -2,6 +2,7 @@ package backend.app.Buffs;
 
 import backend.app.BasicStats;
 import backend.app.DataLoader;
+import backend.app.SpecialAbilities.SpecialAbility;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.simple.JSONObject;

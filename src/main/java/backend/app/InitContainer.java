@@ -1,7 +1,7 @@
 package backend.app;
 
 import backend.app.Buffs.Buff;
-import backend.app.Buffs.SpecialAbility;
+import backend.app.SpecialAbilities.SpecialAbility;
 import backend.app.Buffs.Talent;
 import lombok.Getter;
 

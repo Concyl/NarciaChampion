@@ -1,7 +1,7 @@
-package backend.app.Buffs.SpecificAbilities;
+package backend.app.SpecialAbilities.Abilities;
 
-import backend.app.Buffs.Ability;
-import backend.app.Buffs.SpecialAbility;
+import backend.app.SpecialAbilities.Ability;
+import backend.app.SpecialAbilities.SpecialAbility;
 import backend.app.Hero;
 import org.json.simple.JSONObject;
 

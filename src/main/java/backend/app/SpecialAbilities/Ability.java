@@ -1,4 +1,4 @@
-package backend.app.Buffs;
+package backend.app.SpecialAbilities;
 
 import org.json.simple.JSONObject;
 

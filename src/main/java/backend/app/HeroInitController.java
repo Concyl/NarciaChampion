@@ -1,15 +1,13 @@
 package backend.app;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import backend.app.Buffs.Buff;
-import backend.app.Buffs.SpecialAbility;
+import backend.app.SpecialAbilities.SpecialAbility;
 import backend.app.Buffs.Talent;
 import backend.app.Heroes.DummyNoobHeld;
 import backend.app.Heroes.Dynamica;
 import backend.app.Heroes.TestHero;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class HeroInitController {

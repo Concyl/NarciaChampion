@@ -5,6 +5,10 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 
 import backend.app.Buffs.*;
+import backend.app.SpecialAbilities.OnDeathSpecialAbility;
+import backend.app.SpecialAbilities.OnHitSpecialAbility;
+import backend.app.SpecialAbilities.SpecialAbility;
+import backend.app.SpecialAbilities.TimeBasedSpecialAbility;
 import backend.app.Targets.AutoAttackTarget;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +28,6 @@ public abstract class Hero {
     protected Skill skill;
     @Getter @Setter private boolean revived = false;
     @Getter @Setter private boolean inProcessOfRevive = false;
-
     @Getter @Setter private AutoAttackTarget autoAttackTarget = new AutoAttackTarget(this);
     @Getter @Setter private Hero target = null;
     private boolean inAttackRange = false;
@@ -473,8 +476,8 @@ public abstract class Hero {
     public void postDamage(){
         this.deathCheck();
         for(int i = 0 ; i<this.getSpecialAbilities().size();i++){
-            if(this.getSpecialAbilities().get(i) instanceof OnHitSpecialAbilites){
-                ((OnHitSpecialAbilites) this.getSpecialAbilities().get(i)).trigger();
+            if(this.getSpecialAbilities().get(i) instanceof OnHitSpecialAbility){
+                ((OnHitSpecialAbility) this.getSpecialAbilities().get(i)).trigger();
             }
         }
         this.addAutoEnergy();
@@ -506,13 +509,19 @@ public abstract class Hero {
         this.energy = 0;
         String death = this.getFullname()+ " dies";
         this.getBattlefield().getCombatText().addCombatText(death);
+        for(int i = 0 ; i<this.getSpecialAbilities().size();i++){
+            if(this.getSpecialAbilities().get(i) instanceof OnDeathSpecialAbility){
+                ((OnDeathSpecialAbility) this.getSpecialAbilities().get(i)).trigger();
+            }
+        }
+        // TODO
         if(this.specialBuffs.stream().anyMatch(x-> x.getType() == SpecialIgnores.REVIVE)){
             this.inProcessOfRevive = true;
             this.reviveTalent();
         }
     }
 
-    public void reviveTalent(){
+    public void reviveTalent(double percentage,String origin){
         int amount = 0;
         for(SpecialBuff buff: this.specialBuffs){
             if(buff.getType() == SpecialIgnores.REVIVE){
@@ -525,7 +534,7 @@ public abstract class Hero {
         this.currentHp = this.maxHp*(100-(100-amount))/100;
         this.inProcessOfRevive = false;
         this.setAlive(true);
-        String death = this.getFullname()+ " revives by Talent";
+        String death = this.getFullname()+ " revives by "+origin;
         this.getBattlefield().getCombatText().addCombatText(death);
     }
 

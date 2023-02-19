@@ -1,6 +1,6 @@
 package backend.app.Conditions;
 
-import backend.app.Buffs.SpecialAbility;
+import backend.app.SpecialAbilities.SpecialAbility;
 import org.json.simple.JSONObject;
 
 public class HpUnderThresholdCondition extends Condition{
