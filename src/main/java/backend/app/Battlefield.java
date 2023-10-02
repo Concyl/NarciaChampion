@@ -139,11 +139,11 @@ public class Battlefield {
             return GameState.REDWINTIMEOUT;
         }
         activeredHeroes.removeIf(x -> !x.isAlive() && x.isRevived() && !x.isInProcessOfRevive());
-        if(activeredHeroes.stream().noneMatch(x-> x.isAlive() && !x.isInProcessOfRevive())){
+        if(activeredHeroes.stream().noneMatch(x-> x.isAlive() || x.isInProcessOfRevive())){
             return GameState.BLUEWIN;
         }
         activeblueHeroes.removeIf(x -> !x.isAlive() && x.isRevived() && !x.isInProcessOfRevive());
-        if(activeblueHeroes.stream().noneMatch(x-> x.isAlive() && !x.isInProcessOfRevive())){
+        if(activeblueHeroes.stream().noneMatch(x-> x.isAlive() || x.isInProcessOfRevive())){
             return GameState.REDWIN;
         }
         return GameState.UNDECIDED;

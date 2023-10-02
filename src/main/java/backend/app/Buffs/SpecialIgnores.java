@@ -77,6 +77,13 @@ public enum SpecialIgnores {
             hero.updateImmuneAll();
         }
 
+    },
+    REVIVE{
+        @Override
+        public void updateSpecialIgnore(Hero hero){
+            hero.updateRevive();
+        }
+
     };
     public abstract void updateSpecialIgnore(Hero hero);
 }

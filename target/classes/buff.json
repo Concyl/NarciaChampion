@@ -76,5 +76,17 @@
     "type": "DAMAGECAP",
     "value": 100,
     "ignore": false
+  },
+  {
+    "typename": "backend.app.Buffs.SpecialBuff",
+    "id": 7,
+    "preciseOrigin": "Talent",
+    "isRemovable": false,
+    "timer": 1000,
+    "name": "Wiederbeleben",
+    "type": "REVIVE",
+    "value": 100,
+    "stacks": 1,
+    "ignore": false
   }
 ]

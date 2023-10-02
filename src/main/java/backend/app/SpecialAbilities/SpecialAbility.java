@@ -27,6 +27,7 @@ public abstract class SpecialAbility {
     @Getter @Setter protected Target target;
     @Getter @Setter protected int id;
     @Getter @Setter protected ArrayList<Condition> conditions = new ArrayList<>();
+    @Getter @Setter protected boolean fromTalent = false;
 
     JSONObject jsontarget;
 

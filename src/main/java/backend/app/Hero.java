@@ -5,10 +5,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 
 import backend.app.Buffs.*;
-import backend.app.SpecialAbilities.OnDeathSpecialAbility;
-import backend.app.SpecialAbilities.OnHitSpecialAbility;
-import backend.app.SpecialAbilities.SpecialAbility;
-import backend.app.SpecialAbilities.TimeBasedSpecialAbility;
+import backend.app.SpecialAbilities.*;
+import backend.app.SpecialAbilities.Abilities.Revive;
 import backend.app.Targets.AutoAttackTarget;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +26,7 @@ public abstract class Hero {
     protected Skill skill;
     @Getter @Setter private boolean revived = false;
     @Getter @Setter private boolean inProcessOfRevive = false;
+    @Getter @Setter private int reviveCount = 0;
     @Getter @Setter private AutoAttackTarget autoAttackTarget = new AutoAttackTarget(this);
     @Getter @Setter private Hero target = null;
     private boolean inAttackRange = false;
@@ -124,23 +123,46 @@ public abstract class Hero {
     }
 
     public int getReflect(){
+        boolean flag = false;
+        int curReflect = this.reflect;
         for(SpecialBuff buff: this.specialBuffs){
             if(buff.getType() == SpecialIgnores.REFLECT && buff.getStacks() > 0){
                 buff.decreaseStacks();
+                flag = true;
             }
         }
-        return this.reflect;
+        if(flag){
+            updateReflect();
+        }
+        return curReflect;
     }
 
+    public void decreaseRevives(){
+        this.reviveCount--;
+        for(SpecialBuff buff: this.specialBuffs){
+            if(buff.getType() == SpecialIgnores.REVIVE && buff.getStacks() > 0){
+                buff.decreaseStacks();
+            }
+        }
+    }
     //TODO
     public void removeAllDebuffs(){
-
+        this.buffs.removeIf(x -> (!x.isBuff() && x.isRemovable() && !x.isFromTalent()));
+        this.impairments.removeIf(x -> (x.isRemovable() && !x.isFromTalent()));
     }
 
     public void addSpecialAbility(SpecialAbility specialAbility){
         this.getSpecialAbilities().add(specialAbility);
         if(specialAbility instanceof TimeBasedSpecialAbility){
             this.getTimespecialAbilities().add((TimeBasedSpecialAbility) specialAbility);
+        }
+    }
+
+    public void updateRevive(){
+        for(SpecialBuff buff: this.specialBuffs){
+            if(buff.getType() == SpecialIgnores.REVIVE && buff.getStacks()> this.reviveCount){
+                this.reviveCount = buff.getStacks();
+            }
         }
     }
 
@@ -503,10 +525,6 @@ public abstract class Hero {
     }
 
     private void death(){
-        this.setAlive(false);
-        this.target = null;
-        this.currentHp = 0;
-        this.energy = 0;
         String death = this.getFullname()+ " dies";
         this.getBattlefield().getCombatText().addCombatText(death);
         for(int i = 0 ; i<this.getSpecialAbilities().size();i++){
@@ -514,30 +532,63 @@ public abstract class Hero {
                 ((OnDeathSpecialAbility) this.getSpecialAbilities().get(i)).trigger();
             }
         }
-        // TODO
-        if(this.specialBuffs.stream().anyMatch(x-> x.getType() == SpecialIgnores.REVIVE)){
+        this.resetHero();
+        if(this.reviveCount > 0){
+            this.decreaseRevives();
             this.inProcessOfRevive = true;
-            this.reviveTalent();
+            this.createReviveObject();
         }
     }
 
-    public void reviveTalent(double percentage,String origin){
+    public void createReviveObject(){
         int amount = 0;
+        String buffname = "";
         for(SpecialBuff buff: this.specialBuffs){
             if(buff.getType() == SpecialIgnores.REVIVE){
-                buff.decreaseStacks();
                 if( buff.getValue() > amount){
                     amount = buff.getValue();
+                    buffname = buff.getName();
                 }
             }
         }
+        int timedead = (int) (this.autoattackcooldown+6);
+        TimeBasedSpecialAbility rev = new TimeBasedSpecialAbility(timedead,timedead,false,"Revive",this,this,buffname,false);
+        Ability revAbility = new Revive(amount);
+        rev.setAbility(revAbility);
+        rev.setCooldownTimer(timedead-1);
+        this.addSpecialAbility(rev);
+    }
+
+    public void revive(int amount,String name){
         this.currentHp = this.maxHp*(100-(100-amount))/100;
         this.inProcessOfRevive = false;
         this.setAlive(true);
-        String death = this.getFullname()+ " revives by "+origin;
+        String death = this.getFullname()+ " revives by "+name +" with "+amount+"% HP";
         this.getBattlefield().getCombatText().addCombatText(death);
     }
 
+    private void resetHero(){
+        this.setAlive(false);
+        this.target = null;
+        this.currentHp = 0;
+        this.energy = 0;
+        this.hardResetBuffs();
+    }
+
+    private void hardResetBuffs(){
+        this.buffs.removeIf(x -> !x.isFromTalent());
+        this.impairments.removeIf((x -> !x.isFromTalent()));
+        this.immunities.removeIf((x -> !x.isFromTalent()));
+        this.passiveIgnores.removeIf((x -> !x.isFromTalent()));
+        this.specialBuffs.removeIf((x -> !x.isFromTalent()));
+        this.specialAbilities.removeIf(x -> !x.isFromTalent());
+        this.timespecialAbilities.removeIf(x -> !x.isFromTalent());
+        this.calculateNegativeEffects();
+        Bufftype [] bufftypes = Bufftype.class.getEnumConstants();
+        for(Bufftype buff: bufftypes){
+            buff.recalculateStat(this);
+        }
+    }
     private void setAttackSpeedCd(){
          this.autoattackcooldown = this.realattackspeed/200*6;
     }
@@ -558,7 +609,7 @@ public abstract class Hero {
     }
 
     public void activateAutoProcSkill(){
-        if(this.isAutoproc){
+        if(this.isAutoproc && isAlive()){
             activateSkill();
         }
     }

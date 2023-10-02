@@ -31,6 +31,9 @@ public class SpecialBuff extends Buff{
 
     @Override
     public void apply(){
+        if(this.stacks == 0){
+            return;
+        }
         this.target.addBuff(this);
         if(this.isIgnore()){
             this.target.addPassiveIgnore(this);

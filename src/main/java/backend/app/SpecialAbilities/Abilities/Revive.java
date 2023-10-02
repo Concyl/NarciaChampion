@@ -7,16 +7,16 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
-public class ReviveTalent extends Ability {
+public class Revive extends Ability {
     double percentage;
-    public ReviveTalent(JSONObject specialJSON){
+    public Revive(JSONObject specialJSON){
         this.percentage = (int)(long) specialJSON.get("percentage");
+    }
+    public Revive(double percentage){
+        this.percentage = percentage;
     }
     @Override
     public void applySkill(SpecialAbility specialAbility) {
-        ArrayList<Hero> targets = specialAbility.getTarget().getTarget();
-        for (Hero target : targets) {
-            target.reviveTalent(this.percentage, specialAbility.getName());
-        }
+        specialAbility.getOwner().revive((int) this.percentage,specialAbility.getPreciseOrigin());
     }
 }
