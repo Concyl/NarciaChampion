@@ -161,5 +161,27 @@
       "team": "ALLY"
     },
     "conditions": []
+  },
+  {
+    "typename": "backend.app.SpecialAbilities.TriggerBasedSpecialAbility",
+    "id": 7,
+    "cooldownTimer": 0,
+    "silencable": false,
+    "name": "Geflügelte Wiedergeburt",
+    "preciseOrigin": "Talent",
+    "removable": false,
+    "timer": 1500,
+    "cooldown": 180,
+    "trigger": "ONREVIVE",
+    "buff": {
+      "id": 9
+    },
+    "target": {
+      "typename": "backend.app.Targets.AllHeroesInArea",
+      "ignoresStealth": false,
+      "radius": 12,
+      "team": "ALLY"
+    },
+    "conditions": []
   }
 ]

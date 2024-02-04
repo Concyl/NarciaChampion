@@ -83,10 +83,35 @@
     "preciseOrigin": "Talent",
     "isRemovable": false,
     "timer": 1000,
-    "name": "Wiederbeleben",
+    "name": "Wiederbeleben strong",
     "type": "REVIVE",
     "value": 100,
+    "stacks": 3,
+    "ignore": false
+  },
+  {
+    "typename": "backend.app.Buffs.SpecialBuff",
+    "id": 8,
+    "preciseOrigin": "Talent",
+    "isRemovable": false,
+    "timer": 1000,
+    "name": "Wiederbeleben weak",
+    "type": "REVIVE",
+    "value": 60,
     "stacks": 1,
+    "ignore": false
+  }
+,
+  {
+    "typename": "backend.app.Buffs.SpecialBuff",
+    "id": 9,
+    "preciseOrigin": "Talent",
+    "isRemovable": false,
+    "timer": 100,
+    "name": "Überleben",
+    "type": "NODAMAGESTRONG",
+    "value": 0,
+    "stacks": -1,
     "ignore": false
   }
 ]

@@ -39,7 +39,7 @@
         "fraction": "SAINT",
         "isFlying": false,
         "isLegendary": false,
-        "specialAbilities":[0],
+        "specialAbilities":[0,6],
         "buffs": [4,7]
     },
     {

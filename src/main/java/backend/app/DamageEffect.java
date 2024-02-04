@@ -146,11 +146,13 @@ public class DamageEffect {
             this.damageHealed = true;
             return;
         }
-        if(this.receiver.isStealth()){
+        if(this.receiver.isNoDamageweak() && (!this.specialIgnores.contains(SpecialIgnores.NODAMAGEWEAK) || !this.attacker.getPassiveIgnore(SpecialIgnores.NODAMAGEWEAK))){
             damage = 0;
         }
-        if(damage == 0){
-            this.receiver.addAutoEnergy();
+        if(this.receiver.isNoDamagestrong()){
+            damage = 0;
+        }
+        if(this.receiver.isStealth()){
             return;
         }
         int oldHp = (int)this.receiver.getCurrentHp();

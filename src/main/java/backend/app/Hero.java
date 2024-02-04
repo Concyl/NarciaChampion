@@ -14,6 +14,8 @@ import org.json.simple.JSONObject;
 
 public abstract class Hero {
 
+
+
     public enum Team{
         BLUE,RED
     }
@@ -66,6 +68,8 @@ public abstract class Hero {
     @Getter @Setter private boolean isBlind=false;
     @Getter @Setter private boolean immuneAll=false;
     @Getter @Setter private int damageToLp = -1;
+    @Getter @Setter private boolean noDamageweak = false;
+    @Getter @Setter private boolean noDamagestrong = false;
 
     @Getter @Setter private int autoattackrange;
     @Getter @Setter private double attackspeed;
@@ -164,6 +168,14 @@ public abstract class Hero {
                 this.reviveCount = buff.getStacks();
             }
         }
+    }
+
+    public void updateNoDamageWeak() {
+            this.noDamageweak = this.specialBuffs.stream().anyMatch(x -> x.getType() == SpecialIgnores.NODAMAGEWEAK);
+    }
+
+    public void updateNoDamageStrong(){
+        this.noDamagestrong = this.specialBuffs.stream().anyMatch(x -> x.getType() == SpecialIgnores.NODAMAGESTRONG);
     }
 
     public void updateImmuneAll(){
@@ -505,6 +517,17 @@ public abstract class Hero {
         this.addAutoEnergy();
     }
 
+    public void triggerSpecialAbility(TriggerBasedSpecialAbility.Trigger trigger){
+        for(int i = 0 ; i<this.getSpecialAbilities().size();i++){
+            SpecialAbility ability = this.getSpecialAbilities().get(i);
+            if(ability instanceof TriggerBasedSpecialAbility){
+                if(((TriggerBasedSpecialAbility) ability).getTrigger() == trigger){
+                    ((TriggerBasedSpecialAbility) ability).trigger();
+                }
+            }
+        }
+    }
+
     public void addAutoEnergy(){
         if(this.energy<this.maxEnergy && this.isAlive() && this.canReceiveEnergy){
             int oldenergy = this.energy;
@@ -565,6 +588,7 @@ public abstract class Hero {
         this.setAlive(true);
         String death = this.getFullname()+ " revives by "+name +" with "+amount+"% HP";
         this.getBattlefield().getCombatText().addCombatText(death);
+        triggerSpecialAbility(TriggerBasedSpecialAbility.Trigger.OnRevive);
     }
 
     private void resetHero(){

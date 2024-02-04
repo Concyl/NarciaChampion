@@ -84,6 +84,18 @@ public enum SpecialIgnores {
             hero.updateRevive();
         }
 
+    },
+    NODAMAGEWEAK{
+        @Override
+        public void updateSpecialIgnore(Hero hero){
+            hero.updateNoDamageWeak();
+        }
+    },
+    NODAMAGESTRONG{
+        @Override
+        public void updateSpecialIgnore(Hero hero){
+            hero.updateNoDamageStrong();
+        }
     };
     public abstract void updateSpecialIgnore(Hero hero);
 }
