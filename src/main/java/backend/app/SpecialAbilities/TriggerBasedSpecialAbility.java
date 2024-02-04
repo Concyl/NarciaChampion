@@ -14,7 +14,7 @@ public class TriggerBasedSpecialAbility extends SpecialAbility{
         this.trigger = (Trigger.valueOf( (String) specialJSON.get("trigger")));
     }
     public enum Trigger {
-        OnDeath,OnHit,OnRevive
+        ONDEATH,ONHIT,ONREVIVE
     }
     @Getter @Setter private int stacks;
     @Getter @Setter Trigger trigger;

@@ -66,6 +66,7 @@ public class HeroInitController {
         ArrayList<SpecialAbility> abilities = initSpecialAbilitiesFromIds(specialIDJson);
         for(int j = 0; j<abilities.size();j++){
             abilities.get(j).init(hero,hero);
+            abilities.get(j).setFromTalent(true);
         }
         return abilities;
     }

@@ -588,7 +588,7 @@ public abstract class Hero {
         this.setAlive(true);
         String death = this.getFullname()+ " revives by "+name +" with "+amount+"% HP";
         this.getBattlefield().getCombatText().addCombatText(death);
-        triggerSpecialAbility(TriggerBasedSpecialAbility.Trigger.OnRevive);
+        triggerSpecialAbility(TriggerBasedSpecialAbility.Trigger.ONREVIVE);
     }
 
     private void resetHero(){
