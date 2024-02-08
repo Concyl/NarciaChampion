@@ -1,8 +1,10 @@
 package backend.app;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 
 import backend.app.Buffs.Buff;
+import backend.app.Pets.Pet;
 import backend.app.SpecialAbilities.SpecialAbility;
 import backend.app.Buffs.Talent;
 import backend.app.Heroes.DummyNoobHeld;
@@ -16,6 +18,7 @@ public class HeroInitController {
     private ArrayList<JSONObject> talentJSON;
     public static ArrayList<JSONObject> conditionJSON;
     public static ArrayList<JSONObject> buffJSON;
+    public static ArrayList<JSONObject> petJSON;
 
     public HeroInitController() {
         this.heroJSONList = DataLoader.loadHeroData();
@@ -23,6 +26,7 @@ public class HeroInitController {
         this.talentJSON = DataLoader.loadSpecialAbilites("/src/main/resources/talent.json");
         this.conditionJSON = DataLoader.loadSpecialAbilites("/src/main/resources/conditions.json");
         this.buffJSON = DataLoader.loadSpecialAbilites("/src/main/resources/buff.json");
+        this.petJSON = DataLoader.loadSpecialAbilites("/src/main/resources/pets.json");
     }
 
     public void createHeroObjectswithIds() {
@@ -55,7 +59,9 @@ public class HeroInitController {
             ArrayList<SpecialAbility> specialAbilities = addSpecialAbilitesToHero(initHero,heroJSON);
             ArrayList<Buff> buffs = addBuffsToHero(initHero,heroJSON);
             ArrayList<Talent> talents = new ArrayList<>();
-            InitContainer container = new InitContainer(talents,buffs,specialAbilities,initHero);
+            JSONObject petJSON = DataLoader.getIDObjectfromJSON(0, HeroInitController.petJSON,"id");
+            Pet pet = new Pet(petJSON);
+            InitContainer container = new InitContainer(talents,buffs,specialAbilities,initHero,pet);
             containerArr.add(container);
         }
         return containerArr;

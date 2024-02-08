@@ -1,6 +1,7 @@
 package backend.app;
 
 import backend.app.Buffs.Buff;
+import backend.app.Pets.Pet;
 import backend.app.SpecialAbilities.SpecialAbility;
 import backend.app.Buffs.Talent;
 import lombok.Getter;
@@ -13,18 +14,25 @@ public class InitContainer {
     @Getter private ArrayList<SpecialAbility> specialAbilities;
     @Getter private Hero hero;
 
-    public InitContainer(ArrayList<Talent> talents, ArrayList<Buff> buffs, ArrayList<SpecialAbility> specialAbilities, Hero hero) {
+    @Getter private Pet pet;
+
+    public InitContainer(ArrayList<Talent> talents, ArrayList<Buff> buffs, ArrayList<SpecialAbility> specialAbilities, Hero hero, Pet pet) {
         this.talents = talents;
         this.buffs = buffs;
         this.specialAbilities = specialAbilities;
         this.hero = hero;
+        this.pet = pet;
     }
 
     public void init(){
         initBuffs();
         initSpecialAbilites();
+        initPet();
     }
 
+    private void initPet(){
+        this.pet.init(this.hero);
+    }
     private void initSpecialAbilites(){
         for(SpecialAbility ability: this.specialAbilities){
             hero.addSpecialAbility(ability);

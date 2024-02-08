@@ -184,5 +184,27 @@
       "team": "ALLY"
     },
     "conditions": []
+  },
+  {
+    "typename": "backend.app.SpecialAbilities.OnHitSpecialAbility",
+    "id": 10001,
+    "cooldownTimer": 0,
+    "silencable": false,
+    "name": "Droggo",
+    "preciseOrigin": "Droggo",
+    "chanceToActivate": 100,
+    "removable": false,
+    "stacks": -1,
+    "timer": 1500,
+    "cooldown": 180,
+    "ability": {
+      "typename": "backend.app.SpecialAbilities.Abilities.CreateBuff",
+      "id": [10,11]
+    },
+    "target": {
+      "typename": "backend.app.Targets.SelfTarget",
+      "ignoresStealth": false
+    },
+    "conditions": []
   }
 ]

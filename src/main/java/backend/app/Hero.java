@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 
 import backend.app.Buffs.*;
+import backend.app.Pets.Pet;
 import backend.app.SpecialAbilities.*;
 import backend.app.SpecialAbilities.Abilities.Revive;
 import backend.app.Targets.AutoAttackTarget;
@@ -70,6 +71,8 @@ public abstract class Hero {
     @Getter @Setter private int damageToLp = -1;
     @Getter @Setter private boolean noDamageweak = false;
     @Getter @Setter private boolean noDamagestrong = false;
+
+    @Getter @Setter private Pet pet;
 
     @Getter @Setter private int autoattackrange;
     @Getter @Setter private double attackspeed;
@@ -203,6 +206,9 @@ public abstract class Hero {
             if(buff.getType() == SpecialIgnores.REFLECT && buff.getStacks()!= 0){
                 reflect = reflect + buff.getValue();
             }
+        }
+        if(reflect > 100){
+            reflect = 100;
         }
         this.reflect = reflect;
     }
@@ -576,6 +582,7 @@ public abstract class Hero {
         }
         int timedead = (int) (this.autoattackcooldown+6);
         TimeBasedSpecialAbility rev = new TimeBasedSpecialAbility(timedead,timedead,false,"Revive",this,this,buffname,false);
+        rev.setFromTalent(true);
         Ability revAbility = new Revive(amount);
         rev.setAbility(revAbility);
         rev.setCooldownTimer(timedead-1);

@@ -35,12 +35,7 @@ public class SpecialBuff extends Buff{
             return;
         }
         this.target.addBuff(this);
-        if(this.isIgnore()){
-            this.target.addPassiveIgnore(this);
-        }
-        else{
-            this.type.updateSpecialIgnore(this.target);
-        }
+        this.type.updateSpecialIgnore(this.target);
         String s = this.target.getFullname()+" receives "+this.type.toString()+" from "+this.origin.getFullname()+" by "+ this.name;
         this.origin.getBattlefield().getCombatText().addCombatText(s);
     }

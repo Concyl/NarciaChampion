@@ -100,8 +100,7 @@
     "value": 60,
     "stacks": 1,
     "ignore": false
-  }
-,
+  },
   {
     "typename": "backend.app.Buffs.SpecialBuff",
     "id": 9,
@@ -111,6 +110,29 @@
     "name": "Überleben",
     "type": "NODAMAGESTRONG",
     "value": 0,
+    "stacks": -1,
+    "ignore": false
+  },
+  {
+    "typename": "backend.app.Buffs.Statbuff",
+    "id": 10,
+    "isBuff": true,
+    "preciseOrigin": "Droggo",
+    "isRemovable": false,
+    "timer": 1800,
+    "name": "Droggo Angriffsbuff",
+    "type": "ATTACK",
+    "amount": 100
+  },
+  {
+    "typename": "backend.app.Buffs.SpecialBuff",
+    "id": 11,
+    "preciseOrigin": "Droggo",
+    "isRemovable": false,
+    "timer": 120,
+    "name": "Droggo Reflectbuff",
+    "type": "REFLECT",
+    "value": 65,
     "stacks": -1,
     "ignore": false
   }
