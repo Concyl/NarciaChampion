@@ -2,7 +2,7 @@
   {
     "typename": "backend.app.Pets.Pet",
     "name": "Droggo",
-    "id": 0,
+    "id": [0],
     "specialAbilityid": 10001
   }
 ]
