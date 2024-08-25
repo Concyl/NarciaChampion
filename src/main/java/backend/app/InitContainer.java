@@ -2,6 +2,7 @@ package backend.app;
 
 import backend.app.Buffs.Buff;
 import backend.app.Pets.Pet;
+import backend.app.Pets.SuperPet;
 import backend.app.SpecialAbilities.SpecialAbility;
 import backend.app.Buffs.Talent;
 import lombok.Getter;
@@ -28,10 +29,14 @@ public class InitContainer {
         initBuffs();
         initSpecialAbilites();
         initPet();
+
     }
 
     private void initPet(){
-        this.pet.init(this.hero);
+        Pet pet = this.pet.init(this.hero);
+        if (pet instanceof SuperPet){
+
+        }
     }
     private void initSpecialAbilites(){
         for(SpecialAbility ability: this.specialAbilities){

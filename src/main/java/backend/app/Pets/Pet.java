@@ -13,9 +13,9 @@ import java.util.ArrayList;
 public class Pet {
     @Getter private Hero hero;
     @Getter private String name;
-    @Getter private ArrayList<SpecialAbility> specialAbilities;
+    @Getter private ArrayList<SpecialAbility> specialAbilities = new ArrayList<>();
     @Getter private int id;
-    @Getter private ArrayList<Integer> specialAbilityids;
+    @Getter private ArrayList<Integer> specialAbilityids = new ArrayList<>();
 
     public Pet (Hero hero, String name, ArrayList<Integer> specialAbilityid, int id){
         this.hero = hero;
@@ -39,12 +39,13 @@ public class Pet {
 
     }
 
-    public void init(Hero hero){
+    public Pet init(Hero hero){
         this.hero = hero;
         this.hero.setPet(this);
         this.setPetSkill();
+        return this;
     }
-    private void setPetSkill (){
+    protected void setPetSkill (){
         for(int i = 0;i<this.specialAbilityids.size();i++){
             JSONObject special = DataLoader.getIDObjectfromJSON(this.specialAbilityids.get(i), HeroInitController.specialAbilitiesJSON,"id");
             SpecialAbility ability =  SpecialAbility.fromJSON(special);
